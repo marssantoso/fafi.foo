@@ -24,6 +24,7 @@ function Root() {
         </p>
       </div>
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+      <a href="/g">List of Games</a>
     </>
   )
 }
