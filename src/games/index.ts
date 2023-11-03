@@ -1,3 +1,1 @@
-import TicTacToeClient from './tic-tac-toe'
-
-export { TicTacToeClient}
+export { TicTacToe } from './tic-tac-toe'

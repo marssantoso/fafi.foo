@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // routes
 import Root from './routes/index.tsx'
-import { TicTacToeClient } from './games'
+import TicTacToeClient from './routes/g/tic-tac-toe/index.tsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Root /> },

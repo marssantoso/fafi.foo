@@ -2,12 +2,14 @@
   "name": "fafi.foo-react",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:client": "tsc && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:server": "node dist/server/index.js"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",
