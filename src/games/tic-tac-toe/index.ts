@@ -2,6 +2,7 @@ import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 
 export const TicTacToe: Game = {
+  name: 'tic-tac-toe',
   setup: () => ({ cells: Array(9).fill(null) }),
   turn: {
     minMoves: 1,
