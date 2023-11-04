@@ -1,34 +1,21 @@
-import { FormEvent, useState, useEffect } from 'react'
-import { Client } from 'boardgame.io/react'
-import { SocketIO } from 'boardgame.io/multiplayer'
+import { FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
-import { TicTacToe, TicTacToeBoard } from '../../../games'
+import localForage from 'localforage'
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 
-const TicTacToeClient = Client({
-  game: TicTacToe,
-  board: TicTacToeBoard,
-  multiplayer: SocketIO({ server: 'localhost:8000' }),
-  numPlayers: 2,
-})
+const TicTacToeLobby = () => {
+  const navigate = useNavigate()
+  // const [matches, setMatches] = useState<unknown[]>([])
 
-const Game = () => {
-  const [matches, setMatches] = useState<unknown[]>([])
-  const [matchID, setMatchID] = useState('')
-  const [playerID, setPlayerID] = useState('')
-  const [credentials, setCredentials] = useState<string>()
-
-  useEffect(() => {
+  /*useEffect(() => {
     lobbyClient.listMatches('tic-tac-toe').then(({ matches }) => setMatches(matches))
-  }, [])
+  }, [])*/
 
   const joinMatch = async (matchID: string, playerName: string) => {
-    const { playerCredentials, playerID } = await lobbyClient.joinMatch('tic-tac-toe', matchID, { playerName })
-
-    setMatchID(matchID)
-    setPlayerID(playerID)
-    setCredentials(playerCredentials)
+    await localForage.setItem('playerName', playerName)
+    navigate(`/g/tic-tac-toe/${matchID}`)
   }
 
   const onSubmitJoin = async (e: FormEvent) => {
@@ -45,12 +32,7 @@ const Game = () => {
     await joinMatch(matchID, playerName)
   }
 
-  return playerID ? (
-    <div>
-      <p>MatchID: {matchID}</p>
-      <TicTacToeClient playerID={playerID} matchID={matchID} credentials={credentials} debug={true} />
-    </div>
-  ) : (
+  return (
     <div>
       <h2>Create Room</h2>
       <form onSubmit={onSubmitCreate}>
@@ -58,11 +40,11 @@ const Game = () => {
         <button type="submit">Create</button>
       </form>
       <h2>Join Room</h2>
-      <ul>
+      {/*<ul>
         {matches.map((s, i) => (
           <li key={i}>{JSON.stringify(s as Record<string, string>)}</li>
         ))}
-      </ul>
+      </ul>*/}
       <form onSubmit={onSubmitJoin}>
         <input type="text" placeholder="Enter roomID" />
         <input type="text" placeholder="Enter username" />
@@ -72,4 +54,4 @@ const Game = () => {
   )
 }
 
-export default Game
+export default TicTacToeLobby
