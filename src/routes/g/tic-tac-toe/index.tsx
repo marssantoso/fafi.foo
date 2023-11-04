@@ -1,9 +1,8 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useEffect } from 'react'
 import { Client } from 'boardgame.io/react'
 import { SocketIO } from 'boardgame.io/multiplayer'
 import { LobbyClient } from 'boardgame.io/client'
-import { TicTacToe } from '../../../games'
-import { TicTacToeBoard } from '../../../games/tic-tac-toe/board.tsx'
+import { TicTacToe, TicTacToeBoard } from '../../../games'
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 
@@ -15,14 +14,14 @@ const TicTacToeClient = Client({
 })
 
 const Game = () => {
-  // const [matches, setMatches] = useState<unknown[]>([])
+  const [matches, setMatches] = useState<unknown[]>([])
   const [matchID, setMatchID] = useState('')
   const [playerID, setPlayerID] = useState('')
   const [credentials, setCredentials] = useState<string>()
 
-  /*useEffect(() => {
+  useEffect(() => {
     lobbyClient.listMatches('tic-tac-toe').then(({ matches }) => setMatches(matches))
-  }, [])*/
+  }, [])
 
   const joinMatch = async (matchID: string, playerName: string) => {
     const { playerCredentials, playerID } = await lobbyClient.joinMatch('tic-tac-toe', matchID, { playerName })
@@ -59,11 +58,11 @@ const Game = () => {
         <button type="submit">Create</button>
       </form>
       <h2>Join Room</h2>
-      {/*<ul>
+      <ul>
         {matches.map((s, i) => (
           <li key={i}>{JSON.stringify(s as Record<string, string>)}</li>
         ))}
-      </ul>*/}
+      </ul>
       <form onSubmit={onSubmitJoin}>
         <input type="text" placeholder="Enter roomID" />
         <input type="text" placeholder="Enter username" />

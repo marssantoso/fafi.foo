@@ -1,6 +1,8 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 
+export { TicTacToeBoard } from './board'
+
 export const TicTacToe: Game = {
   name: 'tic-tac-toe',
   setup: () => ({ cells: Array(9).fill(null) }),
@@ -16,12 +18,12 @@ export const TicTacToe: Game = {
       G.cells[id] = playerID
     },
   },
-  endIf: ({G, ctx}) => {
+  endIf: ({ G, ctx }) => {
     if (IsVictory(G.cells)) {
-      return {winner: ctx.currentPlayer};
+      return { winner: ctx.currentPlayer }
     }
     if (IsDraw(G.cells)) {
-      return {draw: true};
+      return { draw: true }
     }
   },
 }

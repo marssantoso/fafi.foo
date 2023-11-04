@@ -1,8 +1,9 @@
 import React from 'react'
 import { BoardProps } from 'boardgame.io/react'
 
-export function TicTacToeBoard({ ctx, G, moves }: BoardProps) {
+export function TicTacToeBoard({ ctx, G, moves, matchData }: BoardProps) {
   const onClick = (id: number) => moves.clickCell(id)
+  const isConnected = matchData?.every((e) => e.isConnected)
 
   let winner: React.JSX.Element = <></>
   if (ctx.gameover) {
@@ -35,12 +36,14 @@ export function TicTacToeBoard({ ctx, G, moves }: BoardProps) {
     tbody.push(<tr key={i}>{cells}</tr>)
   }
 
-  return (
+  return isConnected ? (
     <div>
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>
       {winner}
     </div>
+  ) : (
+    <p>Waiting for all players to be ready...</p>
   )
 }
