@@ -15,10 +15,24 @@ export function TicTacToeBoard(props: BoardProps) {
     textAlign: 'center',
   }
 
+  const boardStyle: React.CSSProperties = {
+    display: 'flex'
+  }
+
+  const playersStyle: React.CSSProperties = {
+    width: 150,
+  }
+
+  const players = matchData?.map(({ id, name }) => {
+    return <li key={id}>{!ctx.gameover && id.toString() === ctx.currentPlayer ? '-> ' : ''}{name}{ !id ? ' (host)' : ''}</li>
+  })
+
+  const winner = matchData?.find(({ id }) => id.toString() === ctx.gameover?.winner)
+
   const bottomText = ctx.gameover
-    ? ctx.gameover.winner === undefined
+    ? winner === undefined
       ? 'Draw!'
-      : `Winner: ${ctx.gameover.winner}`
+      : `Winner: ${winner.name}`
     : isActive
     ? 'Your turn'
     : "Waiting for other player's turn"
@@ -43,11 +57,14 @@ export function TicTacToeBoard(props: BoardProps) {
 
   return isConnected ? (
     G.isStarted ? (
-      <div>
-        <table id="board">
-          <tbody>{tbody}</tbody>
-        </table>
-        <div id="bottomText">{bottomText}</div>
+      <div style={boardStyle}>
+        <ul style={playersStyle}>{players}</ul>
+        <div>
+          <table id="board">
+            <tbody>{tbody}</tbody>
+          </table>
+          <div id="bottomText">{bottomText}</div>
+        </div>
       </div>
     ) : (
       <button onClick={onStarGame}>Start Game</button>
