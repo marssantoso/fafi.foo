@@ -21,7 +21,7 @@ const TicTacToeLobby = () => {
 
   const onJoin = async () => {
     if (!playerName) return
-    const matchID = prompt('Enter room ID')
+    const matchID = prompt('Enter room ID')?.toUpperCase()
     if (!matchID) return
     await joinMatch(matchID, playerName)
   }
