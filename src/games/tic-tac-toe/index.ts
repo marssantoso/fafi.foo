@@ -1,16 +1,24 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 
-export { TicTacToeBoard } from './board'
-
 export const TicTacToe: Game = {
   name: 'tic-tac-toe',
-  setup: () => ({ cells: Array(9).fill(null) }),
+  setup: () => ({
+    isStarted: false,
+    cells: Array(9).fill(null),
+  }),
   turn: {
     minMoves: 1,
     maxMoves: 1,
   },
   moves: {
+    startGame: {
+      move: ({ G }) => {
+        if (G.isStarted) return INVALID_MOVE
+        G.isStarted = true
+      },
+      noLimit: true,
+    },
     clickCell: ({ G, playerID }, id) => {
       if (G.cells[id] !== null) {
         return INVALID_MOVE

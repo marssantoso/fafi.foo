@@ -1,14 +1,11 @@
 import React from 'react'
 import { BoardProps } from 'boardgame.io/react'
 
-export function TicTacToeBoard({ ctx, G, moves, matchData }: BoardProps) {
+export function TicTacToeBoard(props: BoardProps) {
+  const { ctx, G, moves, matchData, isActive } = props
   const onClick = (id: number) => moves.clickCell(id)
+  const onStarGame = () => moves.startGame()
   const isConnected = matchData?.every((e) => e.isConnected)
-
-  let winner: React.JSX.Element = <></>
-  if (ctx.gameover) {
-    winner = <div id="winner">{ctx.gameover.winner === undefined ? 'Draw!' : `Winner: ${ctx.gameover.winner}`}</div>
-  }
 
   const cellStyle: React.CSSProperties = {
     border: '1px solid #555',
@@ -17,6 +14,14 @@ export function TicTacToeBoard({ ctx, G, moves, matchData }: BoardProps) {
     lineHeight: '50px',
     textAlign: 'center',
   }
+
+  const bottomText = ctx.gameover
+    ? ctx.gameover.winner === undefined
+      ? 'Draw!'
+      : `Winner: ${ctx.gameover.winner}`
+    : isActive
+    ? 'Your turn'
+    : "Waiting for other player's turn"
 
   const tbody = []
   for (let i = 0; i < 3; i++) {
@@ -37,13 +42,17 @@ export function TicTacToeBoard({ ctx, G, moves, matchData }: BoardProps) {
   }
 
   return isConnected ? (
-    <div>
-      <table id="board">
-        <tbody>{tbody}</tbody>
-      </table>
-      {winner}
-    </div>
+    G.isStarted ? (
+      <div>
+        <table id="board">
+          <tbody>{tbody}</tbody>
+        </table>
+        <div id="bottomText">{bottomText}</div>
+      </div>
+    ) : (
+      <button onClick={onStarGame}>Start Game</button>
+    )
   ) : (
-    <p>Waiting for all players to be ready...</p>
+    <p>Waiting for all players to connect...</p>
   )
 }

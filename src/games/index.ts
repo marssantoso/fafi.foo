@@ -1,1 +1,1 @@
-export { TicTacToe, TicTacToeBoard } from './tic-tac-toe'
+export { TicTacToe } from './tic-tac-toe'

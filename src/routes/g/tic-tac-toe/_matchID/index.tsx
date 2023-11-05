@@ -3,7 +3,8 @@ import { Client } from 'boardgame.io/react'
 import { SocketIO } from 'boardgame.io/multiplayer'
 import { LobbyClient } from 'boardgame.io/client'
 import localForage from 'localforage'
-import { TicTacToe, TicTacToeBoard } from '../../../../games'
+import { TicTacToe } from '../../../../games'
+import { TicTacToeBoard } from '../../../../games/boards'
 import { useParams } from 'react-router-dom'
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
