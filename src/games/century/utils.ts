@@ -1,4 +1,4 @@
-import { ActionCard, Card, Gems } from './types.ts'
+import { ActionCard, PointCard, Gems } from './types.ts'
 import { PRICE_WEIGHT_MAP, ACTION_TYPES } from './constants'
 
 const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
@@ -18,7 +18,7 @@ const getRandomGems = (point: number): Gems => {
   }
 }
 
-export const randomizeCard = (): Card => {
+export const randomizePointCard = (): PointCard => {
   const point = getRandomInt(6, 20)
   const price = getRandomGems(point)
   return { point, price }
@@ -40,10 +40,10 @@ export const randomizeActionCard = (): ActionCard => {
   return { exchange: [getRandomGems(from), getRandomGems(to)] }
 }
 
-export const generateCards = (n: number): Card[] => {
-  const cards: Card[] = []
+export const generateCards = (n: number): PointCard[] => {
+  const cards: PointCard[] = []
   while (cards.length < n) {
-    const card = randomizeCard()
+    const card = randomizePointCard()
     if (cards.every((c) => c.price.join('') !== card.price.join(''))) {
       cards.push(card)
     }

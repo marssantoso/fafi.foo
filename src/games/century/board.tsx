@@ -1,9 +1,9 @@
 import styles from './styles.module.css'
-import {ActionCard, Card, Gems} from '~/games/century/types.ts'
+import {ActionCard, PointCard, Gems} from '~/games/century/types.ts'
 
 export const CenturyBoard = () => {
   const players = [{ id: '0', name: 'foo', gems: [0, 0, 0, 0] }]
-  const pointCards: Card[] = [
+  const pointCards: PointCard[] = [
     {point: 6, price: [0, 2, 0, 0]},
     {point: 14, price: [0, 0, 1, 2]},
     {point: 9, price: [0, 3, 0, 0]},

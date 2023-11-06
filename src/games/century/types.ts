@@ -1,6 +1,8 @@
 export type Gems = [number, number, number, number]
 
-export interface Card {
+export type ActionType = 'gain' | 'exchange' | 'upgrade'
+
+export interface PointCard {
   point: number
   price: Gems
 }
@@ -12,7 +14,7 @@ export interface ActionCard {
 }
 
 export interface State {
-  cards: Card[]
+  pointCards: PointCard[]
   actionCards: ActionCard[]
   gems: Gems
   coins: [number, number]
@@ -23,5 +25,5 @@ export interface PlayerState extends State {
 }
 
 export interface GameState extends State {
-  players: { [id: string]: PlayerState }
+  players: Record<string, PlayerState>
 }

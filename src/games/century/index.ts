@@ -1,19 +1,19 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 import type { GameState } from './types'
-import {ACTION_CARDS, CARDS, STARTER_ACTION_CARDS} from "~/games/century/constants.ts";
+import {ACTION_CARDS, POINT_CARDS, STARTER_ACTION_CARDS} from "~/games/century/constants.ts";
 
 export const Century: Game<GameState> = {
   name: 'century',
   setup: (_, setupData) => ({
     ...setupData,
-    cards: [...CARDS],
+    pointCards: [...POINT_CARDS],
     actionCards: [...ACTION_CARDS],
     coins: [5, 7],
     gems: [40, 30, 20, 10],
     players: {
       '0': {
-        cards: [],
+        pointCards: [],
         actionCards: [],
         table: [],
         coins: [0, 0],
@@ -50,17 +50,17 @@ export const Century: Game<GameState> = {
       // TODO: open action card from stack
     },
     buyCard: ({ G }, { playerId, cardId }) => {
-      const card = G.cards[cardId]
+      const card = G.pointCards[cardId]
       const player = G.players[playerId]
       if (card?.price.some((p, i) => p > player.gems[i])) return INVALID_MOVE
-      G.players[playerId].cards = [...player.cards, card]
+      G.players[playerId].pointCards = [...player.pointCards, card]
       G.players[playerId].gems = [
         player.gems[0] - card.price[0],
         player.gems[1] - card.price[1],
         player.gems[2] - card.price[2],
         player.gems[3] - card.price[3],
       ]
-      G.cards = G.cards.filter((_g, i) => i !== cardId)
+      G.pointCards = G.pointCards.filter((_g, i) => i !== cardId)
       // TODO: open card from stack
     },
     playCard: ({ G }, { playerId, cardId, times = 1, upgrade }) => {
