@@ -1,4 +1,4 @@
-import { ActionCard, PointCard, Gems } from './types.ts'
+import { ActionCard, PointCard, Gems } from './types'
 import { PRICE_WEIGHT_MAP, ACTION_TYPES } from './constants'
 
 const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min

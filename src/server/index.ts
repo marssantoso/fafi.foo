@@ -1,11 +1,11 @@
 import { customAlphabet } from 'nanoid'
 import { Server, Origins } from 'boardgame.io/server'
-import { TicTacToe } from '../games'
+import { TicTacToe, Ventura } from '../games'
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4)
 
 const server = Server({
-  games: [TicTacToe],
+  games: [TicTacToe, Ventura],
   origins: [Origins.LOCALHOST],
   uuid: nanoid,
   generateCredentials: () => nanoid(9),

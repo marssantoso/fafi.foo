@@ -7,9 +7,8 @@ import { configureStore } from '@reduxjs/toolkit'
 // routes
 import Root from './routes/index.tsx'
 import Games from './routes/g/index.tsx'
-import TicTacToeLobby from './routes/g/tic-tac-toe/index.tsx'
-import TicTacToeMatch from './routes/g/tic-tac-toe/_matchID/index.tsx'
-import VenturaGame from './routes/g/ventura/index.tsx'
+import GameLobby from '~/routes/g/_gameID/index.tsx'
+import GameMatch from '~/routes/g/_gameID/_matchID/index.tsx'
 
 // store
 import playerNameReducer from './store/playerName'
@@ -20,9 +19,8 @@ const router = createBrowserRouter([
     path: '/g',
     element: <Games />,
     children: [
-      { path: '/g/tic-tac-toe', element: <TicTacToeLobby /> },
-      { path: '/g/tic-tac-toe/:matchID', element: <TicTacToeMatch /> },
-      { path: '/g/ventura', element: <VenturaGame /> },
+      { path: '/g/:gameID', element: <GameLobby /> },
+      { path: '/g/:gameID/:matchID', element: <GameMatch /> },
     ],
   },
 ])

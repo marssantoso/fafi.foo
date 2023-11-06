@@ -15,7 +15,7 @@ const Games = () => {
             <h1>List of Games</h1>
             <ul>
               <li>
-                <a href="/g/tic-tac-toe">Tic Tac Toe</a>
+                <a href="/g/_gameID">Tic Tac Toe</a>
               </li>
               <li>
                 <a href="/g/ventura">Ventura</a>

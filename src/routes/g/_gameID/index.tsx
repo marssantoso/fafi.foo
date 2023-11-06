@@ -1,13 +1,14 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import localForage from 'localforage'
 import { usePlayerName } from '~/hooks/usePlayerName.ts'
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 
-const TicTacToeLobby = () => {
+const GameLobby = () => {
   const [playerName] = usePlayerName()
   const navigate = useNavigate()
+  const { gameID } = useParams<string>()
   // const [matches, setMatches] = useState<unknown[]>([])
 
   /*useEffect(() => {
@@ -16,20 +17,19 @@ const TicTacToeLobby = () => {
 
   const joinMatch = async (matchID: string, playerName: string) => {
     await localForage.setItem('playerName', playerName)
-    navigate(`/g/tic-tac-toe/${matchID}`)
+    navigate(`/g/${gameID}/${matchID}`)
   }
 
   const onJoin = async () => {
-    if (!playerName) return
+    if (!playerName || !gameID) return
     const matchID = prompt('Enter room ID')?.toUpperCase()
     if (!matchID) return
     await joinMatch(matchID, playerName)
   }
 
   const onCreate = async () => {
-    console.log(playerName)
-    if (!playerName) return
-    const { matchID } = await lobbyClient.createMatch('tic-tac-toe', { numPlayers: 2 })
+    if (!playerName || !gameID) return
+    const { matchID } = await lobbyClient.createMatch(gameID, { numPlayers: 2 })
     await joinMatch(matchID, playerName)
   }
 
@@ -50,4 +50,4 @@ const TicTacToeLobby = () => {
   )
 }
 
-export default TicTacToeLobby
+export default GameLobby

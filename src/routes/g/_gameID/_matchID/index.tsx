@@ -4,8 +4,8 @@ import { SocketIO } from 'boardgame.io/multiplayer'
 import { LobbyClient } from 'boardgame.io/client'
 import localForage from 'localforage'
 import { useParams } from 'react-router-dom'
-import { TicTacToe } from '~/games'
-import { TicTacToeBoard } from '~/games/boards'
+import { TicTacToe, Ventura } from '~/games'
+import { TicTacToeBoard, VenturaBoard } from '~/games/boards'
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 
@@ -16,11 +16,18 @@ const TicTacToeClient = Client({
   numPlayers: 2,
 })
 
-const TicTacToeMatch = () => {
+const VenturaClient = Client({
+  game: Ventura,
+  board: VenturaBoard,
+  multiplayer: SocketIO({ server: 'localhost:8000' }),
+  numPlayers: 2,
+})
+
+const GameMatch = () => {
   const [playerName, setPlayerName] = useState<string | null>()
   const [playerID, setPlayerID] = useState('')
   const [credentials, setCredentials] = useState<string>()
-  const { matchID } = useParams()
+  const { gameID, matchID } = useParams()
 
   // get player name
   useEffect(() => {
@@ -29,33 +36,38 @@ const TicTacToeMatch = () => {
 
   // get previous match
   useEffect(() => {
-    if (!matchID) return
-    localForage.getItem<{ [p: string]: { playerCredentials: string, playerID: string } }>('tic-tac-toe').then((v) => {
+    if (!gameID || !matchID) return
+    localForage.getItem<{ [p: string]: { playerCredentials: string; playerID: string } }>(gameID).then((v) => {
       if (!v || !v?.[matchID]) return
       const { playerID, playerCredentials } = v[matchID]
       setPlayerID(playerID)
       setCredentials(playerCredentials)
     })
-  }, [matchID])
+  }, [gameID, matchID])
 
   // join game if no credentials
   useEffect(() => {
-    if (!matchID || !playerName || credentials) return
-
+    if (!gameID || !matchID || !playerName || credentials) return
     ;(async () => {
-      const { playerCredentials, playerID } = await lobbyClient.joinMatch('tic-tac-toe', matchID, { playerName })
+      const { playerCredentials, playerID } = await lobbyClient.joinMatch(gameID, matchID, { playerName })
 
-      localForage.setItem('tic-tac-toe', { [matchID]: { playerCredentials, playerID } })
+      localForage.setItem(gameID, { [matchID]: { playerCredentials, playerID } })
       setPlayerID(playerID)
       setCredentials(playerCredentials)
     })()
-  }, [matchID, playerName, credentials])
+  }, [gameID, matchID, playerName, credentials])
 
   return (
     <div>
-      <TicTacToeClient playerID={playerID} matchID={matchID} credentials={credentials} debug={true} />
+      {gameID === 'tic-tac-toe' ? (
+        <TicTacToeClient playerID={playerID} matchID={matchID} credentials={credentials} debug={true} />
+      ) : gameID === 'ventura' ? (
+        <VenturaClient playerID={playerID} matchID={matchID} credentials={credentials} debug={true} />
+      ) : (
+        ''
+      )}
     </div>
   )
 }
 
-export default TicTacToeMatch
+export default GameMatch
