@@ -1,0 +1,57 @@
+.wrapper {
+  display: flex;
+}
+
+.players {
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.playerCard {
+  width: 120px;
+  height: 80px;
+  border: 1px solid;
+}
+
+.board {
+  width: 100%;
+}
+
+.cards {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-bottom: 4px;
+  gap: 4px;
+}
+
+.card {
+  border: 1px solid;
+  width: 80px;
+  height: 120px;
+}
+
+.pointCard--open {
+  /* TODO */
+}
+
+.actionCard--open {
+  /* TODO */
+}
+
+.pointCard--closed,
+.actionCard--closed {
+  height: 90px;
+  width: 60px;
+}
+
+.hand {
+  display: flex;
+  gap: 4px;
+}
+
+.inventory {
+  width: 120px;
+  height: 80px;
+  border: 1px solid;
+}
