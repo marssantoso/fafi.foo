@@ -1,2 +1,2 @@
 export { TicTacToe } from './tic-tac-toe'
-export { Century } from './century'
+export { Ventura } from './ventura'

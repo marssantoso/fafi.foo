@@ -1,2 +1,2 @@
 export { TicTacToeBoard } from './tic-tac-toe/board.tsx'
-export { CenturyBoard } from './century/board.tsx'
+export { VenturaBoard } from './ventura/board.tsx'

@@ -1,10 +1,10 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 import type { GameState } from './types'
-import {ACTION_CARDS, POINT_CARDS, STARTER_ACTION_CARDS} from "~/games/century/constants.ts";
+import {ACTION_CARDS, POINT_CARDS, STARTER_ACTION_CARDS} from "~/games/ventura/constants.ts";
 
-export const Century: Game<GameState> = {
-  name: 'century',
+export const Ventura: Game<GameState> = {
+  name: 'ventura',
   setup: (_, setupData) => ({
     ...setupData,
     pointCards: [...POINT_CARDS],

@@ -18,7 +18,7 @@ const Games = () => {
                 <a href="/g/tic-tac-toe">Tic Tac Toe</a>
               </li>
               <li>
-                <a href="/g/century">Century</a>
+                <a href="/g/ventura">Ventura</a>
               </li>
             </ul>
           </>

@@ -1,7 +1,7 @@
 import styles from './styles.module.css'
-import {ActionCard, PointCard, Gems} from '~/games/century/types.ts'
+import {ActionCard, PointCard, Gems} from '~/games/ventura/types.ts'
 
-export const CenturyBoard = () => {
+export const VenturaBoard = () => {
   const players = [{ id: '0', name: 'foo', gems: [0, 0, 0, 0] }]
   const pointCards: PointCard[] = [
     {point: 6, price: [0, 2, 0, 0]},
@@ -21,7 +21,7 @@ export const CenturyBoard = () => {
   const inventory: Gems = [3, 0, 0, 0]
   return (
     <div>
-      <h1>Century</h1>
+      <h1>Ventura</h1>
       <div className={styles.wrapper}>
         <div className={styles.players}>
           {players.map(({ name, gems }, i) => (
