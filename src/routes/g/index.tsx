@@ -1,19 +1,26 @@
-import { Outlet } from 'react-router-dom'
+import { Link, useOutlet } from 'react-router-dom'
 import Header from '~/components/Header'
 
 const Games = () => {
-
+  const Outlet = useOutlet()
   return (
     <div>
-      <Header />
-      <h1>List of Games</h1>
-      <ul>
-        <li>
-          <a href="/g/tic-tac-toe">Tic Tac Toe</a>
-        </li>
-      </ul>
+      <div>
+        <Header />
+        {Outlet ? <Link to="/g">Back to list</Link> : ''}
+      </div>
       <main>
-        <Outlet />
+        {Outlet || (
+          <>
+            <h1>List of Games</h1>
+            <ul>
+              <li>
+                <a href="/g/tic-tac-toe">Tic Tac Toe</a>
+                <a href="/g/century">Century</a>
+              </li>
+            </ul>
+          </>
+        )}
       </main>
     </div>
   )

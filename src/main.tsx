@@ -9,6 +9,7 @@ import Root from './routes/index.tsx'
 import Games from './routes/g/index.tsx'
 import TicTacToeLobby from './routes/g/tic-tac-toe/index.tsx'
 import TicTacToeMatch from './routes/g/tic-tac-toe/_matchID/index.tsx'
+import CenturyGame from './routes/g/century/index.tsx'
 
 // store
 import playerNameReducer from './store/playerName'
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/g/tic-tac-toe', element: <TicTacToeLobby /> },
       { path: '/g/tic-tac-toe/:matchID', element: <TicTacToeMatch /> },
+      { path: '/g/century', element: <CenturyGame /> },
     ],
   },
 ])
