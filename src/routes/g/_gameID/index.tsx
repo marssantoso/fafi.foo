@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import localForage from 'localforage'
@@ -9,20 +10,21 @@ const GameLobby = () => {
   const [playerName] = usePlayerName()
   const navigate = useNavigate()
   const { gameID } = useParams<string>()
-  // const [matches, setMatches] = useState<unknown[]>([])
+  const [matches, setMatches] = useState<{ matchID: string }[]>([])
 
-  /*useEffect(() => {
-    lobbyClient.listMatches('tic-tac-toe').then(({ matches }) => setMatches(matches))
-  }, [])*/
+  useEffect(() => {
+    if (!gameID) return
+    lobbyClient.listMatches(gameID).then(({ matches }) => setMatches(matches))
+  }, [gameID])
 
   const joinMatch = async (matchID: string, playerName: string) => {
     await localForage.setItem('playerName', playerName)
     navigate(`/g/${gameID}/${matchID}`)
   }
 
-  const onJoin = async () => {
+  const onJoin = async (ID?: string) => {
     if (!playerName || !gameID) return
-    const matchID = prompt('Enter room ID')?.toUpperCase()
+    const matchID = ID ?? prompt('Enter room ID')?.toUpperCase()
     if (!matchID) return
     await joinMatch(matchID, playerName)
   }
@@ -35,15 +37,19 @@ const GameLobby = () => {
 
   return (
     <div>
-      {/*<ul>
+      <ul>
         {matches.map((s, i) => (
-          <li key={i}>{JSON.stringify(s as Record<string, string>)}</li>
+          // <li key={i}>{JSON.stringify(s as Record<string, string>)}</li>
+          <li key={i}>
+            <span>{s.matchID} </span>
+            <a href="#" onClick={() => onJoin(s.matchID)}>(join)</a>
+          </li>
         ))}
-      </ul>*/}
+      </ul>
       <button type="button" onClick={onCreate}>
         Create Room
       </button>
-      <button type="button" onClick={onJoin}>
+      <button type="button" onClick={() => onJoin()}>
         Join Room
       </button>
     </div>
