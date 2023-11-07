@@ -1,7 +1,13 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
-import { ACTION_CARDS, INITIAL_PLAYER_STATE, POINT_CARDS, STARTER_ACTION_CARDS } from './constants'
-import { getInitialGemsByPlayerId, randomizeActionCard, randomizePointCard } from './utils'
+import { INITIAL_PLAYER_STATE, STARTER_ACTION_CARDS } from './constants'
+import {
+  generateActionCards,
+  generateCards,
+  getInitialGemsByPlayerId,
+  randomizeActionCard,
+  randomizePointCard
+} from './utils'
 import type { GameState } from './types'
 
 export const Ventura: Game<GameState> = {
@@ -9,8 +15,8 @@ export const Ventura: Game<GameState> = {
   setup: (_, setupData) => ({
     ...setupData,
     isStarted: false,
-    pointCards: [...POINT_CARDS],
-    actionCards: [...ACTION_CARDS],
+    pointCards: generateCards(5),
+    actionCards: generateActionCards(6),
     coins: [5, 7],
     gems: [40, 30, 20, 10],
     players: [],
