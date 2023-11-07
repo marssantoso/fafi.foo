@@ -22,8 +22,11 @@ export interface State {
 
 export interface PlayerState extends State {
   table: ActionCard[]
+  name?: string
+  isActive?: boolean
 }
 
 export interface GameState extends State {
-  players: Record<string, PlayerState>
+  isStarted: boolean
+  players: PlayerState[]
 }

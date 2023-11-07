@@ -61,3 +61,11 @@ export const generateActionCards = (n: number): ActionCard[] => {
   }
   return cards
 }
+
+export const getInitialGemsByPlayerId = (id: number): Gems => {
+  const a = Math.floor((id + 1) / 2) % 2 + 3
+  const b = Math.floor((id + 1) / 4)
+
+  // TODO: figure out c and d for when id is really high
+  return [a, b, 0, 0]
+}

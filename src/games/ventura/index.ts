@@ -1,37 +1,39 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
+import { ACTION_CARDS, INITIAL_PLAYER_STATE, POINT_CARDS, STARTER_ACTION_CARDS } from './constants'
+import { getInitialGemsByPlayerId } from './utils'
 import type { GameState } from './types'
-import { ACTION_CARDS, POINT_CARDS, STARTER_ACTION_CARDS } from './constants'
 
 export const Ventura: Game<GameState> = {
   name: 'ventura',
   setup: (_, setupData) => ({
     ...setupData,
+    isStarted: false,
     pointCards: [...POINT_CARDS],
     actionCards: [...ACTION_CARDS],
     coins: [5, 7],
     gems: [40, 30, 20, 10],
-    players: {
-      '0': {
-        pointCards: [],
-        actionCards: [],
-        table: [],
-        coins: [0, 0],
-        gems: [3, 1, 0, 0],
-      },
-    },
+    players: [],
   }),
   turn: {
     minMoves: 1,
     maxMoves: 1,
   },
   moves: {
-    initiateGame: {
+    initPlayer: {
+      noLimit: true,
+      move: ({ G }, id: number) => {
+        G.players[id] = { ...INITIAL_PLAYER_STATE }
+      },
+    },
+    startGame: {
       noLimit: true,
       move: ({ G }) => {
-        for (const playerId in G.players) {
-          G.players[playerId].actionCards = [...STARTER_ACTION_CARDS]
-        }
+        G.players.forEach((_p, i) => {
+          G.players[i].gems = getInitialGemsByPlayerId(i)
+          G.players[i].actionCards = [...STARTER_ACTION_CARDS]
+        })
+        G.isStarted = true
       },
     },
     takeActionCard: ({ G }, { playerId, cardId, gems }) => {
