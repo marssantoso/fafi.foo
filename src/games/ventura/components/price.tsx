@@ -6,6 +6,7 @@ interface Props {
   price: Gems
 }
 
+// TODO: rename to Pieces
 const Price = (props: Props) => {
   const pieces = gemsToPieces(props.price)
 

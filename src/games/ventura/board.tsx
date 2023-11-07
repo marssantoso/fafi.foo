@@ -7,6 +7,7 @@ import { gemsToPieces, piecesToGems } from './utils.ts'
 // components
 import Inventory from './components/inventory.tsx'
 import Player from './components/player.tsx'
+import Price from './components/price.tsx'
 import PointCardComponent from './components/pointCard.tsx'
 import ActionCardComponent from './components/actionCard.tsx'
 
@@ -120,13 +121,18 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               </div>
               <div className={styles.cards}>
                 {actionCards.map((card, i) => (
-                  <ActionCardComponent key={i} {...card} onClick={() => onTakeActionCard(card, i)} />
+                  <div className={styles.actionCard} key={i}>
+                    <ActionCardComponent {...card} onClick={() => onTakeActionCard(card, i)} />
+                    {G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}
+                  </div>
                 ))}
                 <div className={styles.closedCard}></div>
                 <dialog open={dialogs.takeActionCard}>
                   <p style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</p>
                   <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
-                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>Confirm</button>
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>
+                    Confirm
+                  </button>
                   <button onClick={() => toggleDialog('takeActionCard', false)}>Cancel</button>
                 </dialog>
               </div>

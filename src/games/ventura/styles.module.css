@@ -25,11 +25,9 @@
 .cards {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
   margin-bottom: 4px;
   gap: 4px;
   flex: 1;
-  height: 126px;
 }
 
 .actionCards {
@@ -40,6 +38,10 @@
   max-width: calc(100vw - 150px - 180px - 170px - 6px - 2rem);
   box-sizing: border-box;
   overflow-x: auto;
+}
+
+.actionCard {
+  width: 82px;
 }
 
 .pointCards {

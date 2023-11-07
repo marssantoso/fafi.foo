@@ -2,11 +2,13 @@ import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 import { INITIAL_PLAYER_STATE, STARTER_ACTION_CARDS } from './constants'
 import {
+  gemsToPieces,
   generateActionCards,
   generateCards,
   getInitialGemsByPlayerId,
+  piecesToGems,
   randomizeActionCard,
-  randomizePointCard
+  randomizePointCard,
 } from './utils'
 import type { GameState } from './types'
 
@@ -17,6 +19,7 @@ export const Ventura: Game<GameState> = {
     isStarted: false,
     pointCards: generateCards(5),
     actionCards: generateActionCards(6),
+    actionGems: Array(6).fill(0),
     coins: [5, 7],
     gems: [40, 30, 20, 10],
     players: [],
@@ -49,17 +52,36 @@ export const Ventura: Game<GameState> = {
       const player = G.players[playerID]
       const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, 0)
       if (!card || totalGems < cardID) return INVALID_MOVE
+
+      // add action card from table to player
       G.players[playerID].actionCards = [...player.actionCards, card]
+      G.actionCards = G.actionCards.filter((_g, i) => i !== cardID)
+
+      // put new action card on the table
+      // TODO: handle duplicate action cards
+      G.actionCards.push(randomizeActionCard())
+
+      // deduct player's gems if needed to pay
       G.players[playerID].gems = [
         player.gems[0] - gems[0],
         player.gems[1] - gems[1],
         player.gems[2] - gems[2],
         player.gems[3] - gems[3],
       ]
-      G.actionCards = G.actionCards.filter((_g, i) => i !== cardID)
-      G.actionCards.push(randomizeActionCard())
-      // TODO: handle duplicate action cards
-      // TODO: put player's gems in the table
+
+      // add action gems from table to player if any
+      if (G.actionGems[cardID]) {
+        G.players[playerID].gems = piecesToGems([
+          ...gemsToPieces(G.players[playerID].gems),
+          ...gemsToPieces(G.actionGems[cardID]),
+        ])
+        G.actionGems.shift()
+      }
+
+      // put gems paid by player onto each action card
+      gemsToPieces(gems).forEach((g, i) => {
+        G.actionGems[i] = G.actionGems[i] ? piecesToGems([...gemsToPieces(G.actionGems[i]), g]) : piecesToGems([g])
+      })
     },
     buyPointCard: ({ G }, { playerID, cardID }) => {
       const card = G.pointCards[cardID]
