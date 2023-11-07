@@ -43,6 +43,9 @@
   width: 12px;
   height: 12px;
 }
+.gem--uncolored {
+  background-color: lightsteelblue;
+}
 .gems--large .gem {
   width: 16px;
   height: 16px;
@@ -52,11 +55,61 @@
   background-color: burlywood;
 }
 .gem-1 {
-  background-color: darkolivegreen;
+  background-color: mediumseagreen;
 }
 .gem-2 {
   background-color: cornflowerblue;
 }
 .gem-3 {
   background-color: indianred;
+}
+
+/* CARD */
+.card {
+  border: 1px solid;
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
+}
+
+.pointCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pointCard__point {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.point {
+  display: block;
+  width: 32px;
+  line-height: 32px;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: bold;
+  border: 4px solid slateblue;
+  color: slateblue;
+  box-sizing: content-box;
+}
+
+.price {
+  height: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  gap: 4px;
+}
+
+.sign {
+  display: block;
+  text-align: center;
+  font-size: 24px;
+  line-height: 32px;
 }

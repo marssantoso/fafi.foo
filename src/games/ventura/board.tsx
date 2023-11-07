@@ -6,6 +6,8 @@ import { BoardProps } from 'boardgame.io/react'
 // components
 import Inventory from "./components/inventory.tsx";
 import Player from "./components/player.tsx";
+import PointCardComponent from "./components/pointCard.tsx";
+import ActionCardComponent from "./components/actionCard.tsx";
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
@@ -34,13 +36,6 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       <div className={styles.wrapper}>
         <div className={styles.players}>
           {players.map(({ name, gems, isActive }, i) => (
-            /*<div key={i} className={styles.playerCard}>
-              <p>
-                {name}
-                {isActive ? '*' : ''}
-              </p>
-              <Inventory gems={gems} />
-            </div>*/
             <Player key={i} name={name} gems={gems} isActive={isActive} />
           ))}
         </div>
@@ -52,18 +47,13 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               <div className="gems"></div>
               <div className={styles.cards}>
                 {pointCards.map(({ point, price }, i) => (
-                  <div key={i} className={`${styles.card} ${styles['pointCard--open']}`}>
-                    <p>{point}</p>
-                    <span>{price.join(' - ')}</span>
-                  </div>
+                  <PointCardComponent key={i} point={point} price={price} />
                 ))}
                 <div className={`${styles.card} ${styles['pointCard--closed']}`}></div>
               </div>
               <div className={styles.cards}>
                 {actionCards.map((c, i) => (
-                  <div key={i} className={`${styles.card} ${styles['actionCard--open']}`}>
-                    {c.gain ? 'gain' : c.upgrade ? 'upgrade' : 'exchange'}
-                  </div>
+                  <ActionCardComponent key={i} {...c} />
                 ))}
                 <div className={`${styles.card} ${styles['actionCard--closed']}`}></div>
               </div>

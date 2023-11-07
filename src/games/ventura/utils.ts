@@ -69,3 +69,9 @@ export const getInitialGemsByPlayerId = (id: number): Gems => {
   // TODO: figure out c and d for when id is really high
   return [a, b, 0, 0]
 }
+
+export const gemsToPieces = (gems: Gems, max?: number): number[] => {
+  const pieces = gems.flatMap((a, i) => Array.from(Array(a)).map(() => i))
+  if (!max || (max && pieces.length <= max)) return pieces
+  return pieces.splice(pieces.length - 10, pieces.length)
+}

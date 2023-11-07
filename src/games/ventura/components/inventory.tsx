@@ -1,6 +1,7 @@
 import React from 'react'
-import { Gems } from '~/games/ventura/types.ts'
 import styles from './styles.module.css'
+import { Gems } from '../types.ts'
+import {gemsToPieces} from "../utils.ts";
 
 interface Props {
   gems: Gems
@@ -8,18 +9,17 @@ interface Props {
 }
 
 const Inventory = (props: Props) => {
-  const gs: React.JSX.Element[] = []
+  const grid: React.JSX.Element[] = []
   const inv = Array(10).fill(null)
-  const s = props.gems.flatMap((a, i) => Array.from(Array(a)).map(() => i))
-  const q = s.length > 10 ? s.splice(s.length - 10, s.length) : s
+  const pieces = gemsToPieces(props.gems)
 
   inv.forEach((_n, i) => {
-    gs.push(<div key={i} className={styles.grid}>
-      <div className={`${styles.gem} ${q[i] === undefined ? '' : styles['gem-' + q[i]]}`}></div>
+    grid.push(<div key={i} className={styles.grid}>
+      <div className={`${styles.gem} ${pieces[i] === undefined ? '' : styles['gem-' + pieces[i]]}`}></div>
     </div>)
   })
 
-  return <div className={`${styles.gems} ${props.isLarge ? styles['gems--large'] : ''}`}>{gs}</div>
+  return <div className={`${styles.gems} ${props.isLarge ? styles['gems--large'] : ''}`}>{grid}</div>
 }
 
 export default Inventory
