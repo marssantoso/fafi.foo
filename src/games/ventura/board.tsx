@@ -1,7 +1,8 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
-import { ActionCard, PointCard, PlayerState, OnClickCard } from '~/games/ventura/types.ts'
 import { BoardProps } from 'boardgame.io/react'
+import type { ActionCard, PointCard, PlayerState, OnClickCard } from './types.ts'
+import { gemsToPieces, piecesToGems } from './utils.ts'
 
 // components
 import Inventory from './components/inventory.tsx'
@@ -11,6 +12,10 @@ import ActionCardComponent from './components/actionCard.tsx'
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
+  const [selectedGems, setSelectedGems] = useState<number[]>([])
+  const [selectedCard, setSelectedCard] = useState<{ card: ActionCard | PointCard, cardID: number } | null>(null)
+  const [dialogs, setDialogs] = useState<Record<string, boolean>>({ takeActionCard: false })
+
   const pointCards: PointCard[] = G.pointCards
   const actionCards: ActionCard[] = G.actionCards
   const player = playerID ? G.players[playerID] : null
@@ -34,10 +39,46 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     setPlayers(players)
   }, [G, ctx.currentPlayer, matchData])
 
+  // clear state when all dialogs close
+  useEffect(() => {
+    if (Object.values(dialogs).every((v) => !v)) {
+      setSelectedGems([])
+      setSelectedCard(null)
+    }
+  }, [dialogs]);
+
+  const toggleDialog = (d: string, value?: boolean) => {
+    setDialogs((state) => ({
+      ...state,
+      [d]: value === undefined ? !state[d] : value,
+    }))
+  }
+
+  const onSelectGems = (i: number) => {
+    setSelectedGems((state) => {
+      if (!state.includes(i)) return [...state, i]
+      return state.filter((j) => i !== j)
+    })
+  }
+
+  const onConfirmSelectGems = () => {
+    if (!selectedCard) return
+    const pieces = gemsToPieces(player.gems)
+    const gems = piecesToGems(selectedGems.map((i) => pieces[i]))
+    const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, 0)
+    const { card, cardID } = selectedCard
+    if (totalGems < cardID) return
+
+    moves.takeActionCard({playerID, cardID, gems, card})
+    toggleDialog('takeActionCard', false)
+  }
+
   const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
-    if (ctx.currentPlayer !== playerID) return
-    // TODO: prompt how many gems to exchange with card
-    moves.takeActionCard({ playerID, cardID, gems: [0, 0, 0, 0], card })
+    if (!card || ctx.currentPlayer !== playerID) return
+    if (!cardID) return moves.takeActionCard({playerID, cardID, gems: [0, 0, 0, 0], card})
+
+    setSelectedCard({ card, cardID })
+    toggleDialog('takeActionCard')
   }
 
   const onPlayActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
@@ -82,6 +123,12 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   <ActionCardComponent key={i} {...card} onClick={() => onTakeActionCard(card, i)} />
                 ))}
                 <div className={styles.closedCard}></div>
+                <dialog open={dialogs.takeActionCard}>
+                  <p style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</p>
+                  <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>Confirm</button>
+                  <button onClick={() => toggleDialog('takeActionCard', false)}>Cancel</button>
+                </dialog>
               </div>
               {player ? (
                 <div className={styles.cards}>

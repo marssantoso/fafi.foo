@@ -53,6 +53,7 @@ export const Ventura: Game<GameState> = {
       G.actionCards = G.actionCards.filter((_g, i) => i !== cardID)
       G.actionCards.push(randomizeActionCard())
       // TODO: handle duplicate action cards
+      // TODO: put player's gems in the table
     },
     buyPointCard: ({ G }, { playerID, cardID }) => {
       const card = G.pointCards[cardID]

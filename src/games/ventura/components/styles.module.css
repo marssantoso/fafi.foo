@@ -38,6 +38,10 @@
   justify-content: center;
   align-items: center;
 }
+.grid--selected {
+  border-width: 2px;
+  padding: 3px;
+}
 
 .gem {
   width: 12px;
@@ -49,6 +53,9 @@
 .gems--large .gem {
   width: 16px;
   height: 16px;
+}
+.gems--selectable .gem:not(.gem--empty) {
+  cursor: pointer;
 }
 
 .gem-0 {
