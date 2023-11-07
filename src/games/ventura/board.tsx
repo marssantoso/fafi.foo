@@ -43,10 +43,12 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
             <Player key={i} name={name} gems={gems} isActive={isActive} />
           ))}
         </div>
-        {!G.isStarted ? (
-          <button onClick={() => moves.startGame()}>Start</button>
-        ) : (
-          <div className={styles.board}>
+        <div className={styles.board}>
+          {!G.isStarted ? (
+            <div>
+              <button onClick={() => moves.startGame()}>Start</button>
+            </div>
+          ) : (
             <div className={styles.table}>
               <div className="gems"></div>
               <div className={styles.cards}>
@@ -69,30 +71,30 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 <></>
               )}
             </div>
-            {player ? (
-              <>
-                <div className={styles.hand}>
-                  <div className={styles.inventory}>
-                    <Inventory gems={player.gems} isLarge />
-                  </div>
-                  <div className={styles.actionCards}>
-                    {player.actionCards.map((c: ActionCard, i: number) => (
-                      <ActionCardComponent key={i} {...c} />
-                    ))}
-                  </div>
-                  <div className="coins"></div>
-                  <div className={styles.pointCards}>
-                    {player.pointCards.map(({ point, price }: PointCard, i: number) => (
-                      <PointCardComponent key={i} point={point} price={price} />
-                    ))}
-                  </div>
+          )}
+          {G.isStarted && player ? (
+            <>
+              <div className={styles.hand}>
+                <div className={styles.inventory}>
+                  <Inventory gems={player.gems} isLarge />
                 </div>
-              </>
-            ) : (
-              <></>
-            )}
-          </div>
-        )}
+                <div className={styles.actionCards}>
+                  {player.actionCards.map((c: ActionCard, i: number) => (
+                    <ActionCardComponent key={i} {...c} />
+                  ))}
+                </div>
+                <div className="coins"></div>
+                <div className={styles.pointCards}>
+                  {player.pointCards.map(({ point, price }: PointCard, i: number) => (
+                    <PointCardComponent key={i} point={point} price={price} />
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </div>
   )

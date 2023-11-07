@@ -28,15 +28,15 @@ export const randomizeActionCard = (): ActionCard => {
   const actionType = ACTION_TYPES[getRandomInt(0, 2)]
 
   if (actionType === 'gain') {
-    return { gain: getRandomGems(getRandomInt(4, 8)) }
+    return { gain: getRandomGems(getRandomInt(3, 9)) }
   }
 
   if (actionType === 'upgrade') {
     return { upgrade: getRandomInt(1, 3) }
   }
 
-  const from = getRandomInt(getRandomInt(2, 4), getRandomInt(6, 8))
-  const to = getRandomInt(from, getRandomInt(from, from + 14))
+  const from = getRandomInt(3, 9)
+  const to = getRandomInt(from + 1, from * 2)
   return { exchange: [getRandomGems(from), getRandomGems(to)] }
 }
 
