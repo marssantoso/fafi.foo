@@ -1,16 +1,10 @@
 .wrapper {
   display: flex;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .players {
-  width: 150px;
   flex-shrink: 0;
-}
-
-.playerCard {
-  width: 120px;
-  height: 80px;
-  border: 1px solid;
 }
 
 .board {
@@ -51,7 +45,9 @@
 }
 
 .inventory {
-  width: 120px;
+  width: 180px;
   height: 80px;
   border: 1px solid;
+  padding: 4px;
+  box-sizing: border-box;
 }

@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import {ActionCard, PointCard, PlayerState} from '~/games/ventura/types.ts'
 import { BoardProps } from 'boardgame.io/react'
 
+// components
+import Inventory from "./components/inventory.tsx";
+import Player from "./components/player.tsx";
+
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
   const pointCards: PointCard[] = G.pointCards
@@ -30,13 +34,14 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       <div className={styles.wrapper}>
         <div className={styles.players}>
           {players.map(({ name, gems, isActive }, i) => (
-            <div key={i} className={styles.playerCard}>
+            /*<div key={i} className={styles.playerCard}>
               <p>
                 {name}
                 {isActive ? '*' : ''}
               </p>
-              <span>{gems?.join(' - ')}</span>
-            </div>
+              <Inventory gems={gems} />
+            </div>*/
+            <Player key={i} name={name} gems={gems} isActive={isActive} />
           ))}
         </div>
         {!G.isStarted ? (
@@ -67,7 +72,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               <>
                 <div className={styles.hand}>
                   <div className={styles.inventory}>
-                    <span>{player.gems.join(' - ')}</span>
+                    <Inventory gems={player.gems} isLarge />
                   </div>
                   <div className={styles.cards}>
                     <div className={`${styles.card} ${styles['pointCard--closed']}`}></div>

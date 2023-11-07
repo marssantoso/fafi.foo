@@ -1,0 +1,62 @@
+/* PLAYER */
+.player {
+  box-sizing: border-box;
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+.playerName {
+  background-color: lightsalmon;
+  padding: 4px 8px;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+.playerName--active {
+  background-color: palegreen;
+}
+
+/* INVENTORY */
+.gems {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-gap: 2px;
+  box-sizing: border-box;
+  grid-template-columns: repeat(5, 1fr);
+}
+.gems--large {
+  grid-gap: 4px;
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
+  border: 1px solid grey;
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gem {
+  width: 12px;
+  height: 12px;
+}
+.gems--large .gem {
+  width: 16px;
+  height: 16px;
+}
+
+.gem-0 {
+  background-color: burlywood;
+}
+.gem-1 {
+  background-color: darkolivegreen;
+}
+.gem-2 {
+  background-color: cornflowerblue;
+}
+.gem-3 {
+  background-color: indianred;
+}
