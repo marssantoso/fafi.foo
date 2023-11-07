@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
-import { ActionCard, PointCard, PlayerState } from '~/games/ventura/types.ts'
+import { ActionCard, PointCard, PlayerState, OnClickCard } from '~/games/ventura/types.ts'
 import { BoardProps } from 'boardgame.io/react'
 
 // components
@@ -34,6 +34,26 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     setPlayers(players)
   }, [G, ctx.currentPlayer, matchData])
 
+  const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
+    if (ctx.currentPlayer !== playerID) return
+    // TODO: prompt how many gems to exchange with card
+    moves.takeActionCard({ playerID, cardID, gems: [0, 0, 0, 0], card })
+  }
+
+  const onPlayActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
+    if (ctx.currentPlayer !== playerID) return
+    if (!card?.gain) {
+      console.log('moves.playActionCard({playerID, cardID, times: 1, upgrade, card})')
+      return
+    }
+    moves.playActionCard({playerID, cardID, card})
+  }
+
+  const onBuyPointCard: OnClickCard<PointCard> = (card?: PointCard, cardID?: number) => {
+    if (ctx.currentPlayer !== playerID) return
+    moves.buyPointCard({ playerID, cardID, card })
+  }
+
   return (
     <div>
       <h1 className="page__title">Ventura Unlimited</h1>
@@ -52,14 +72,14 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
             <div className={styles.table}>
               <div className="gems"></div>
               <div className={styles.cards}>
-                {pointCards.map(({ point, price }, i) => (
-                  <PointCardComponent key={i} point={point} price={price} />
+                {pointCards.map((card, i) => (
+                  <PointCardComponent key={i} {...card} onClick={() => onBuyPointCard(card, i)} />
                 ))}
                 <div className={styles.closedCard}></div>
               </div>
               <div className={styles.cards}>
-                {actionCards.map((c, i) => (
-                  <ActionCardComponent key={i} {...c} />
+                {actionCards.map((card, i) => (
+                  <ActionCardComponent key={i} {...card} onClick={() => onTakeActionCard(card, i)} />
                 ))}
                 <div className={styles.closedCard}></div>
               </div>
@@ -79,8 +99,8 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   <Inventory gems={player.gems} isLarge />
                 </div>
                 <div className={styles.actionCards}>
-                  {player.actionCards.map((c: ActionCard, i: number) => (
-                    <ActionCardComponent key={i} {...c} />
+                  {player.actionCards.map((card: ActionCard, i: number) => (
+                    <ActionCardComponent key={i} {...card} onClick={() => onPlayActionCard(card, i)} />
                   ))}
                 </div>
                 <div className="coins"></div>

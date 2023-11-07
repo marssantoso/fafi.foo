@@ -30,3 +30,5 @@ export interface GameState extends State {
   isStarted: boolean
   players: PlayerState[]
 }
+
+export type OnClickCard<T> = (card?: T, id?: number) => void

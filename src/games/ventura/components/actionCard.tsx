@@ -1,12 +1,16 @@
 import Card from './card'
 import Price from './price'
-import type { ActionCard } from '../types'
+import type { ActionCard, OnClickCard } from '../types'
 import styles from './styles.module.css'
 
-const ActionCardComponent = (props: ActionCard) => {
+interface Props extends ActionCard {
+  onClick?: OnClickCard<ActionCard>
+}
+
+const ActionCardComponent = (props: Props) => {
   if (props.gain) {
     return (
-      <Card>
+      <Card onClick={props.onClick}>
         <Price price={props.gain} />
         <span className={styles.sign}>＋</span>
       </Card>
@@ -15,7 +19,7 @@ const ActionCardComponent = (props: ActionCard) => {
 
   if (props.exchange) {
     return (
-      <Card>
+      <Card onClick={props.onClick}>
         <Price price={props.exchange[1]} />
         <span className={styles.sign}>⇧</span>
         <Price price={props.exchange[0]} />
@@ -26,7 +30,7 @@ const ActionCardComponent = (props: ActionCard) => {
   if (props.upgrade) {
     const pieces = Array(props.upgrade).fill(null)
     return (
-      <Card>
+      <Card onClick={props.onClick}>
         <Price price={[0, 0, 0, 0]}/>
         <span className={styles.sign}>⇧⇧</span>
         <div className={styles.price}>

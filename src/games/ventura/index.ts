@@ -41,7 +41,7 @@ export const Ventura: Game<GameState> = {
     takeActionCard: ({ G }, { playerID, cardID, gems }) => {
       const card = G.actionCards[cardID]
       const player = G.players[playerID]
-      const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, -1)
+      const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, 0)
       if (!card || totalGems < cardID) return INVALID_MOVE
       G.players[playerID].actionCards = [...player.actionCards, card]
       G.players[playerID].gems = [
@@ -81,6 +81,7 @@ export const Ventura: Game<GameState> = {
           player.gems[3] + card.gain[3],
         ]
       } else if (card.exchange) {
+        // TODO: validate
         for (let i = 0; i < times; i++) {
           G.players[playerID].gems = [
             player.gems[0] + card.exchange[1][0] - card.exchange[0][0],
@@ -90,6 +91,7 @@ export const Ventura: Game<GameState> = {
           ]
         }
       } else if (card.upgrade) {
+        // TODO: validate
         G.players[playerID].gems = [
           player.gems[0] + upgrade[1][0] - upgrade[0][0],
           player.gems[1] + upgrade[1][1] - upgrade[0][1],
