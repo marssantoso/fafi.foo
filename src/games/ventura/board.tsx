@@ -30,7 +30,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
 
   return (
     <div>
-      <h1>Ventura</h1>
+      <h1>Ventura Unlimited</h1>
       <div className={styles.wrapper}>
         <div className={styles.players}>
           {players.map(({ name, gems, isActive }, i) => (
