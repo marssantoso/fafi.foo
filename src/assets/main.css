@@ -1,0 +1,12 @@
+body {
+  margin: unset;
+  padding: unset;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.page__title {
+  margin: 1rem 0;
+  padding: 0 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+}

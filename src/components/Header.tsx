@@ -1,13 +1,10 @@
-import React from 'react'
 import localForage from 'localforage'
-import {usePlayerName} from "~/hooks/usePlayerName.ts";
+import { usePlayerName } from '~/hooks/usePlayerName.ts'
+import styles from './header.module.css'
+import {Link} from "react-router-dom";
 
 const Header = () => {
   const [playerName, setPlayerName] = usePlayerName()
-
-  const headerStyle: React.CSSProperties = {
-    display: 'flex',
-  }
 
   const onEnterName = () => {
     const newName = prompt('Enter new name')
@@ -15,7 +12,8 @@ const Header = () => {
   }
 
   return (
-    <div style={headerStyle}>
+    <div className={styles.header}>
+      <Link to="/g" className={styles.brand}>fafi.foo</Link>
       {playerName ? (
         <div>
           <span>Playing as: {playerName} </span>

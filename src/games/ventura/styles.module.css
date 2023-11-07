@@ -1,14 +1,25 @@
 .wrapper {
   display: flex;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  position: relative;
+  height: calc(100vh - 120px);
+  box-sizing: border-box;
 }
 
 .players {
   flex-shrink: 0;
+  position: fixed;
+  width: 126px;
+  top: 120px;
+  bottom: 0;
+  padding-right: 16px;
+  overflow-y: auto;
 }
 
 .board {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  margin-left: 142px;
 }
 
 .cards {
@@ -17,31 +28,44 @@
   align-items: flex-end;
   margin-bottom: 4px;
   gap: 4px;
+  flex: 1;
+  height: 126px;
 }
 
-.card {
+.actionCards {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  margin: 0 1rem;
+  max-width: calc(100vw - 150px - 180px - 170px - 6px - 2rem);
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.pointCards {
+  display: flex;
+  padding-bottom: 1rem;
+  gap: 4px;
+  width: 170px;
+  overflow-x: scroll;
+  flex-shrink: 0;
+}
+
+.closedCard  {
   border: 1px solid;
-  width: 80px;
-  height: 120px;
-}
-
-.pointCard--open {
-  /* TODO */
-}
-
-.actionCard--open {
-  /* TODO */
-}
-
-.pointCard--closed,
-.actionCard--closed {
   height: 90px;
   width: 60px;
 }
 
+.table {
+  flex: 1;
+}
+
 .hand {
   display: flex;
+  align-items: flex-start;
   gap: 4px;
+  height: 138px;
 }
 
 .inventory {
@@ -50,4 +74,5 @@
   border: 1px solid;
   padding: 4px;
   box-sizing: border-box;
+  flex-shrink: 0;
 }

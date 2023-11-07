@@ -11,8 +11,8 @@ const Price = (props: Props) => {
 
   return (
     <div className={styles.price}>
-      {pieces.map((i) => (
-        <div className={`${styles.gem} ${styles['gem-' + i]}`}></div>
+      {pieces.map((i, j) => (
+        <div key={j} className={`${styles.gem} ${styles['gem-' + i]}`}></div>
       ))}
     </div>
   )

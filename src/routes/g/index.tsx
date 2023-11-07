@@ -1,14 +1,11 @@
-import { Link, useOutlet } from 'react-router-dom'
+import { useOutlet } from 'react-router-dom'
 import Header from '~/components/Header'
 
 const Games = () => {
   const Outlet = useOutlet()
   return (
     <div>
-      <div>
-        <Header />
-        {Outlet ? <Link to="/g">Back to list</Link> : ''}
-      </div>
+      <Header />
       <main>
         {Outlet || (
           <>

@@ -30,8 +30,8 @@ const ActionCardComponent = (props: ActionCard) => {
         <Price price={[0, 0, 0, 0]}/>
         <span className={styles.sign}>⇧⇧</span>
         <div className={styles.price}>
-          {pieces.map(() => (
-            <div className={`${styles.gem} ${styles['gem--uncolored']}`} />
+          {pieces.map((_i, j) => (
+            <div key={j} className={`${styles.gem} ${styles['gem--uncolored']}`} />
           ))}
         </div>
       </Card>
