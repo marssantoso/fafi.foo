@@ -81,6 +81,19 @@
   flex-shrink: 0;
   display: inline-block;
 }
+.card--closed {
+  height: 90px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+.card__text {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  transform: rotate(-45deg);
+}
 
 .pointCard {
   height: 100%;

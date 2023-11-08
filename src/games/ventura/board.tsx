@@ -10,6 +10,7 @@ import Player from './components/player.tsx'
 import Price from './components/price.tsx'
 import PointCardComponent from './components/pointCard.tsx'
 import ActionCardComponent from './components/actionCard.tsx'
+import ClosedCard from './components/closedCard.tsx'
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
@@ -96,6 +97,11 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     moves.buyPointCard({ playerID, cardID, card })
   }
 
+  const onClickUsedPile = () => {
+    if (ctx.currentPlayer !== playerID) return
+    moves.rest(playerID)
+  }
+
   return (
     <div>
       <h1 className="page__title">Ventura Unlimited</h1>
@@ -117,7 +123,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 {pointCards.map((card, i) => (
                   <PointCardComponent key={i} {...card} onClick={() => onBuyPointCard(card, i)} />
                 ))}
-                <div className={styles.closedCard}></div>
+                <ClosedCard >Point Card</ClosedCard>
               </div>
               <div className={styles.cards}>
                 {actionCards.map((card, i) => (
@@ -126,7 +132,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                     {G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}
                   </div>
                 ))}
-                <div className={styles.closedCard}></div>
+                <ClosedCard>Action Card</ClosedCard>
                 <dialog open={dialogs.takeActionCard}>
                   <p style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</p>
                   <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
@@ -138,7 +144,9 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               </div>
               {player ? (
                 <div className={styles.cards}>
-                  <div className={styles.closedCard}></div>
+                  <ClosedCard onClick={onClickUsedPile}>
+                    <span>Used (x{player.used.length})</span>
+                  </ClosedCard>
                 </div>
               ) : (
                 <></>

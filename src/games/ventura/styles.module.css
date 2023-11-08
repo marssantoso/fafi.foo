@@ -53,14 +53,9 @@
   flex-shrink: 0;
 }
 
-.closedCard  {
-  border: 1px solid;
-  height: 90px;
-  width: 60px;
-}
-
 .table {
   flex: 1;
+  padding-right: 1rem;
 }
 
 .hand {
