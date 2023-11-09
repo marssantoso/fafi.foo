@@ -73,3 +73,26 @@
   box-sizing: border-box;
   flex-shrink: 0;
 }
+
+.upgrades {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 4px;
+}
+
+.upgrade {
+  border: 1px solid lightgrey;
+  cursor: pointer;
+}
+
+.upgrade input {
+  display: none;
+}
+
+.upgrade--checked {
+  border-color: black;
+}
+
+.fieldset {
+  margin-bottom: 8px;
+}

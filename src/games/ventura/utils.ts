@@ -70,6 +70,8 @@ export const getInitialGemsByPlayerId = (id: number): Gems => {
   return [a, b, 0, 0]
 }
 
+export const gemsToPoint = (gems: Gems) => gems.reduce((a, b, i) => a + b * PRICE_WEIGHT_MAP[i], 0)
+
 // [0, 1, 2, 3] --> [1, 2, 2, 3, 3, 3]
 export const gemsToPieces = (gems: Gems, max = 10): number[] => {
   const pieces = gems.flatMap((a, i) => Array.from(Array(a)).map(() => i))
@@ -83,4 +85,33 @@ export const piecesToGems = (pieces: number[]): Gems => {
     prev[curr] += 1
     return prev
   }, [0, 0, 0, 0])
+}
+
+export const sortGems = (a: Gems, b: Gems) => {
+  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3] - b[3]
+}
+
+export const getAvailableUpgrade = (pieces: number[], n = 0) => {
+  if (!n) return []
+  const upgrades: number[][] = []
+  const piecesSum = pieces.reduce((a, b) => a + b, 0)
+  const back = (current: number[], index: number) => {
+    const currentSum = current.reduce((a, b) => a + b, 0)
+    if (currentSum <= n + piecesSum) {
+      if (current.join() !== pieces.join() && !upgrades.map((v) => piecesToGems(v).join()).includes(piecesToGems(current).join())) {
+        upgrades.push([...current])
+      }
+    }
+    if (index === pieces.length) return
+    for (let i = 1; i <= n; i++) {
+      // increment current piece by i and move to next piece
+      const next = [...current]
+      next[index] = next[index] + i > 3 ? 3 : next[index] + i
+      back(next, index + 1)
+    }
+    // skip increment and move to next piece
+    back(current, index + 1)
+  }
+  back(pieces, 0)
+  return upgrades
 }

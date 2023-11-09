@@ -1,8 +1,8 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
-import type { ActionCard, PointCard, PlayerState, OnClickCard } from './types.ts'
-import { gemsToPieces, piecesToGems } from './utils.ts'
+import type { ActionCard, PointCard, PlayerState, OnClickCard, Gems } from './types.ts'
+import { gemsToPieces, getAvailableUpgrade, piecesToGems, sortGems } from './utils.ts'
 
 // components
 import Inventory from './components/inventory.tsx'
@@ -15,8 +15,14 @@ import ClosedCard from './components/closedCard.tsx'
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
   const [selectedGems, setSelectedGems] = useState<number[]>([])
-  const [selectedCard, setSelectedCard] = useState<{ card: ActionCard | PointCard, cardID: number } | null>(null)
-  const [dialogs, setDialogs] = useState<Record<string, boolean>>({ takeActionCard: false })
+  const [selectedPieces, setSelectedPieces] = useState<number[]>([])
+  const [selectedCard, setSelectedCard] = useState<{ card: ActionCard | PointCard; cardID: number } | null>(null)
+  const [availableUpgrades, setAvailableUpgrades] = useState<Gems[]>([])
+  const [selectedUpgrade, setSelectedUpgrade] = useState<number | null>(null)
+  const [dialogs, setDialogs] = useState<Record<string, boolean>>({
+    takeActionCard: false,
+    playActionUpgrade: false,
+  })
 
   const pointCards: PointCard[] = G.pointCards
   const actionCards: ActionCard[] = G.actionCards
@@ -46,8 +52,11 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     if (Object.values(dialogs).every((v) => !v)) {
       setSelectedGems([])
       setSelectedCard(null)
+      setSelectedPieces([])
+      setAvailableUpgrades([])
+      setSelectedUpgrade(null)
     }
-  }, [dialogs]);
+  }, [dialogs])
 
   const toggleDialog = (d: string, value?: boolean) => {
     setDialogs((state) => ({
@@ -57,39 +66,57 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   }
 
   const onSelectGems = (i: number) => {
-    setSelectedGems((state) => {
-      if (!state.includes(i)) return [...state, i]
-      return state.filter((j) => i !== j)
-    })
+    if (!player?.gems) return []
+    const gems = selectedGems.includes(i) ? selectedGems.filter((j) => i !== j) : [...selectedGems, i]
+    const pieces = gems.map((i) => gemsToPieces(player.gems)[i])
+    setSelectedGems(gems)
+    setSelectedPieces(pieces)
+    return pieces
+  }
+
+  const onSelectGemsForUpgrade = (i: number) => {
+    if (!selectedCard) return
+    const { upgrade } = selectedCard.card as ActionCard
+    const selectedPieces = onSelectGems(i)
+    const upgrades = getAvailableUpgrade(selectedPieces, upgrade)
+    setAvailableUpgrades(upgrades.map((u) => piecesToGems(u)).sort(sortGems))
   }
 
   const onConfirmSelectGems = () => {
     if (!selectedCard) return
-    const pieces = gemsToPieces(player.gems)
-    const gems = piecesToGems(selectedGems.map((i) => pieces[i]))
+    const gems = piecesToGems(selectedPieces)
     const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, 0)
     const { card, cardID } = selectedCard
     if (totalGems < cardID) return
 
-    moves.takeActionCard({playerID, cardID, gems, card})
+    moves.takeActionCard({ playerID, cardID, gems, card })
     toggleDialog('takeActionCard', false)
+  }
+
+  const onConfirmUpgrade = () => {
+    if (!selectedCard || selectedUpgrade === null) return
+    const {card, cardID} = selectedCard
+    const upgrade = [piecesToGems(selectedPieces), availableUpgrades[selectedUpgrade]]
+
+    moves.playActionCard({ playerID, cardID, upgrade, card })
+    toggleDialog('playActionUpgrade', false)
   }
 
   const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
     if (!card || ctx.currentPlayer !== playerID) return
-    if (!cardID) return moves.takeActionCard({playerID, cardID, gems: [0, 0, 0, 0], card})
+    if (!cardID) return moves.takeActionCard({ playerID, cardID, gems: [0, 0, 0, 0], card })
 
     setSelectedCard({ card, cardID })
     toggleDialog('takeActionCard')
   }
 
   const onPlayActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
-    if (ctx.currentPlayer !== playerID) return
-    if (!card?.gain) {
-      console.log('moves.playActionCard({playerID, cardID, times: 1, upgrade, card})')
-      return
-    }
-    moves.playActionCard({playerID, cardID, card})
+    if (!card || cardID === undefined || ctx.currentPlayer !== playerID) return
+    setSelectedCard({ card, cardID })
+
+    if (card.gain) return moves.playActionCard({ playerID, cardID, card })
+    if (card.upgrade) return toggleDialog('playActionUpgrade', true)
+    console.log('moves.playActionCard({playerID, cardID, times: 1, upgrade, card})')
   }
 
   const onBuyPointCard: OnClickCard<PointCard> = (card?: PointCard, cardID?: number) => {
@@ -123,7 +150,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 {pointCards.map((card, i) => (
                   <PointCardComponent key={i} {...card} onClick={() => onBuyPointCard(card, i)} />
                 ))}
-                <ClosedCard >Point Card</ClosedCard>
+                <ClosedCard>Point Card</ClosedCard>
               </div>
               <div className={styles.cards}>
                 {actionCards.map((card, i) => (
@@ -134,12 +161,41 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 ))}
                 <ClosedCard>Action Card</ClosedCard>
                 <dialog open={dialogs.takeActionCard}>
-                  <p style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</p>
-                  <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
+                  <fieldset className={styles.fieldset}>
+                    <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</legend>
+                    <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
+                  </fieldset>
                   <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>
                     Confirm
                   </button>
                   <button onClick={() => toggleDialog('takeActionCard', false)}>Cancel</button>
+                </dialog>
+                <dialog open={dialogs.playActionUpgrade}>
+                  <fieldset className={styles.fieldset}>
+                    <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to upgrade</legend>
+                    <Inventory
+                      gems={player.gems}
+                      isLarge
+                      isSelectable
+                      selected={selectedGems}
+                      onSelect={onSelectGemsForUpgrade}
+                    />
+                  </fieldset>
+                  {availableUpgrades.length ? <fieldset className={styles.fieldset}>
+                      <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select what to upgrade to</legend>
+                      <div className={styles.upgrades}>
+                        {availableUpgrades.map((g, i) => (
+                          <label key={i} className={`${styles.upgrade} ${selectedUpgrade === i ? styles['upgrade--checked'] : ''}`}>
+                            <input type="radio" name="upgrade" value={i} checked={selectedUpgrade === i} onChange={() => setSelectedUpgrade(i)} />
+                            <Price price={g} />
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset> : <></>}
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmUpgrade}>
+                    Confirm
+                  </button>
+                  <button onClick={() => toggleDialog('playActionUpgrade', false)}>Cancel</button>
                 </dialog>
               </div>
               {player ? (
