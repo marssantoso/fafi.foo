@@ -110,17 +110,15 @@ export const Ventura: Game<GameState> = {
           player.gems[3] + card.gain[3],
         ]
       } else if (card.exchange) {
-        // TODO: validate
-        for (let i = 0; i < times; i++) {
-          G.players[playerID].gems = [
-            player.gems[0] + card.exchange[1][0] - card.exchange[0][0],
-            player.gems[1] + card.exchange[1][1] - card.exchange[0][1],
-            player.gems[2] + card.exchange[1][2] - card.exchange[0][2],
-            player.gems[3] + card.exchange[1][3] - card.exchange[0][3],
-          ]
-        }
+        // TODO: validate = if (times = 0 || gems not enough)
+        G.players[playerID].gems = [
+          player.gems[0] - (card.exchange[0][0] * times) + (card.exchange[1][0] * times),
+          player.gems[1] - (card.exchange[0][1] * times) + (card.exchange[1][1] * times),
+          player.gems[2] - (card.exchange[0][2] * times) + (card.exchange[1][2] * times),
+          player.gems[3] - (card.exchange[0][3] * times) + (card.exchange[1][3] * times),
+        ]
       } else if (card.upgrade) {
-        // TODO: validate
+        // TODO: validate = if (gems = 0)
         G.players[playerID].gems = [
           player.gems[0] + upgrade[1][0] - upgrade[0][0],
           player.gems[1] + upgrade[1][1] - upgrade[0][1],

@@ -74,7 +74,7 @@ export const gemsToPoint = (gems: Gems) => gems.reduce((a, b, i) => a + b * PRIC
 
 // [0, 1, 2, 3] --> [1, 2, 2, 3, 3, 3]
 export const gemsToPieces = (gems: Gems, max = 10): number[] => {
-  const pieces = gems.flatMap((a, i) => Array.from(Array(a)).map(() => i))
+  const pieces = gems.flatMap((a, i) => Array(a).fill(i))
   if (!max || (max && pieces.length <= max)) return pieces
   return pieces.splice(pieces.length - 10, pieces.length)
 }
@@ -114,4 +114,14 @@ export const getAvailableUpgrade = (pieces: number[], n = 0) => {
   }
   back(pieces, 0)
   return upgrades
+}
+
+export const getMaxExchange = (gems: Gems, cost: Gems) => {
+  if (gems.some((p, i) => p < cost[i])) return 0
+  const divide = (a: number, i: number) => cost[i] ? Math.floor(a / cost[i]) : 0
+  return Math.min(...(gems.map(divide).filter(Boolean)))
+}
+
+export const multiplyGems = (expected: Gems, times = 1): Gems => {
+  return expected.map((a) => a + (a * (times - 1))) as Gems
 }
