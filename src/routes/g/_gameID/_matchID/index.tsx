@@ -8,9 +8,9 @@ import { TicTacToe, Ventura } from '~/games'
 import { TicTacToeBoard, VenturaBoard } from '~/games/boards'
 
 const { protocol, hostname, port } = window.location
-const server = `${hostname}:${port}`
+const server = `${protocol}//${hostname}:${port}`
 
-const lobbyClient = new LobbyClient({ server: `${protocol}//${server}` })
+const lobbyClient = new LobbyClient({ server })
 
 const TicTacToeClient = Client({
   game: TicTacToe,
