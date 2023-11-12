@@ -1,0 +1,5 @@
+{
+  "watch": ["src/server", "src/games"],
+  "ext": "ts",
+  "exec": "ts-node -P tsconfig.server.json src/server/index.ts"
+}

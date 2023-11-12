@@ -6,7 +6,7 @@ import { usePlayerName } from '~/hooks/usePlayerName.ts'
 import { GAMES } from '~/constants'
 
 const { protocol, hostname, port } = window.location
-const server = `${protocol}//${hostname}:${port}`
+const server = __BASE_URL__ || `${protocol}//${hostname}:${port}`
 const lobbyClient = new LobbyClient({ server })
 
 const GameLobby = () => {

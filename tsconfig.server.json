@@ -14,5 +14,8 @@
     }
   },
   "lib": ["ES2020"],
-  "include": ["src/server/index.ts"]
+  "include": ["src/server/index.ts"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
