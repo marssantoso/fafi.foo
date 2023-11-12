@@ -7,19 +7,22 @@ import { useParams } from 'react-router-dom'
 import { TicTacToe, Ventura } from '~/games'
 import { TicTacToeBoard, VenturaBoard } from '~/games/boards'
 
-const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
+const { protocol, hostname, port } = window.location
+const server = `${hostname}:${port}`
+
+const lobbyClient = new LobbyClient({ server: `${protocol}//${server}` })
 
 const TicTacToeClient = Client({
   game: TicTacToe,
   board: TicTacToeBoard,
-  multiplayer: SocketIO({ server: 'localhost:8000' }),
+  multiplayer: SocketIO({ server }),
   numPlayers: 2,
 })
 
 const VenturaClient = Client({
   game: Ventura,
   board: VenturaBoard,
-  multiplayer: SocketIO({ server: 'localhost:8000' }),
+  multiplayer: SocketIO({ server }),
   numPlayers: 2,
 })
 

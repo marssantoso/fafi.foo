@@ -1,5 +1,6 @@
-import { useOutlet } from 'react-router-dom'
+import { Link, useOutlet } from 'react-router-dom'
 import Header from '~/components/Header'
+import { GAMES } from '~/constants'
 
 const Games = () => {
   const Outlet = useOutlet()
@@ -9,14 +10,13 @@ const Games = () => {
       <main>
         {Outlet || (
           <>
-            <h1>List of Games</h1>
+            <h1 className="page__title">Games</h1>
             <ul>
-              <li>
-                <a href="/g/_gameID">Tic Tac Toe</a>
-              </li>
-              <li>
-                <a href="/g/ventura">Ventura Unlimited</a>
-              </li>
+              {GAMES.map(({ id, name }) => (
+                <li key={id}>
+                  <Link to={`/g/${id}`}>{name}</Link>
+                </li>
+              ))}
             </ul>
           </>
         )}

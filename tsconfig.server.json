@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "ES2020",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
+    "baseUrl": "./src",
+    "paths": {
+      "~/": [""],
+      "~/*": ["*"]
+    }
   },
-  "lib": ["es2015"],
+  "lib": ["ES2020"],
   "include": ["src/server/index.ts"]
 }
