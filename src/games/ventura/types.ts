@@ -16,6 +16,8 @@ export interface ActionCard {
 export interface State {
   pointCards: PointCard[]
   actionCards: ActionCard[]
+  generatedPointCards: PointCard[]
+  generatedActionCards: ActionCard[]
   actionGems: Gems[]
   gems: Gems
   coins: [number, number]

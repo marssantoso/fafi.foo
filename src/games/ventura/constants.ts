@@ -11,6 +11,8 @@ export const STARTER_ACTION_CARDS: [ActionCard, ActionCard] = [{ gain: [2, 0, 0,
 export const INITIAL_PLAYER_STATE: PlayerState = {
   pointCards: [],
   actionCards: [],
+  generatedPointCards: [],
+  generatedActionCards: [],
   actionGems: [],
   used: [],
   coins: [0, 0],

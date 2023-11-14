@@ -18,30 +18,38 @@ const getRandomGems = (point: number): Gems => {
   }
 }
 
-export const randomizePointCard = (): PointCard => {
+export const randomizePointCard = (existingCards?: PointCard[]): PointCard => {
   const point = getRandomInt(6, 20)
   const price = getRandomGems(point)
-  return { point, price }
+  if (!existingCards?.find((c) => c.price.join('') === price.join(''))) {
+    return { point, price }
+  }
+  return randomizePointCard(existingCards)
 }
 
-export const randomizeActionCard = (): ActionCard => {
+export const randomizeActionCard = (existingCards?: ActionCard[]): ActionCard => {
   const actionType = ACTION_TYPES[getRandomInt(0, 2)]
+  let card: ActionCard = {}
 
   if (actionType === 'gain') {
-    return { gain: getRandomGems(getRandomInt(3, 9)) }
+    card = { gain: getRandomGems(getRandomInt(3, 9)) }
+  } else if (actionType === 'upgrade') {
+    card = { upgrade: getRandomInt(1, 3) }
+  } else if (actionType === 'exchange') {
+    const from = getRandomInt(3, 9)
+    const to = getRandomInt(from + 1, from * 2)
+    card = { exchange: [getRandomGems(from), getRandomGems(to)] }
   }
 
-  if (actionType === 'upgrade') {
-    return { upgrade: getRandomInt(1, 3) }
+  if (!existingCards?.find((c) => JSON.stringify(c) === JSON.stringify(card))) {
+    return card
   }
 
-  const from = getRandomInt(3, 9)
-  const to = getRandomInt(from + 1, from * 2)
-  return { exchange: [getRandomGems(from), getRandomGems(to)] }
+  return randomizeActionCard(existingCards)
 }
 
-export const generateCards = (n: number): PointCard[] => {
-  const cards: PointCard[] = []
+export const generateCards = (n: number, existingCards?: PointCard[]): PointCard[] => {
+  const cards: PointCard[] = existingCards?.length ? [...existingCards] : []
   while (cards.length < n) {
     const card = randomizePointCard()
     if (cards.every((c) => c.price.join('') !== card.price.join(''))) {
@@ -51,10 +59,10 @@ export const generateCards = (n: number): PointCard[] => {
   return cards
 }
 
-export const generateActionCards = (n: number): ActionCard[] => {
+export const generateActionCards = (n: number, existingCards?: ActionCard[]): ActionCard[] => {
   const cards: ActionCard[] = []
   while (cards.length < n) {
-    const card = randomizeActionCard()
+    const card = randomizeActionCard(existingCards)
     if (cards.every((c) => JSON.stringify(c) !== JSON.stringify(card))) {
       cards.push(card)
     }

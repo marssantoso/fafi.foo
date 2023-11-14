@@ -15,16 +15,22 @@ import type { GameState } from './types'
 
 export const Ventura: Game<GameState> = {
   name: 'ventura',
-  setup: (_, setupData) => ({
-    ...setupData,
-    isStarted: false,
-    pointCards: generateCards(5),
-    actionCards: generateActionCards(6),
-    actionGems: Array(6).fill(0),
-    coins: [5, 7],
-    gems: [40, 30, 20, 10],
-    players: [],
-  }),
+  setup: (_, setupData) => {
+    const pointCards = generateCards(5)
+    const actionCards = generateActionCards(6)
+    return {
+      ...setupData,
+      isStarted: false,
+      generatedPointCards: [...pointCards],
+      generatedActionCards: [...STARTER_ACTION_CARDS, ...actionCards],
+      pointCards: [...pointCards],
+      actionCards: [...actionCards],
+      actionGems: Array(6).fill(0),
+      coins: [5, 7],
+      gems: [40, 30, 20, 10],
+      players: [],
+    }
+  },
   turn: {
     minMoves: 1,
     maxMoves: 1,
@@ -59,8 +65,9 @@ export const Ventura: Game<GameState> = {
       G.actionCards = G.actionCards.filter((_g, i) => i !== cardID)
 
       // put new action card on the table
-      // TODO: handle duplicate action cards
-      G.actionCards.push(randomizeActionCard())
+      const newCard = randomizeActionCard(G.generatedActionCards)
+      G.actionCards.push(newCard)
+      G.generatedActionCards.push(newCard)
 
       // deduct player's gems if needed to pay
       G.players[playerID].gems = [
@@ -96,8 +103,11 @@ export const Ventura: Game<GameState> = {
         player.gems[3] - card.price[3],
       ]
       G.pointCards = G.pointCards.filter((_g, i) => i !== cardID)
-      G.pointCards.push(randomizePointCard())
-      // TODO: handle duplicate point cards
+
+      // put a new point card on the table
+      const newCard = randomizePointCard(G.generatedPointCards)
+      G.pointCards.push(newCard)
+      G.generatedPointCards.push(newCard)
     },
     playActionCard: ({ G }, { playerID, cardID, times = 1, upgrade }) => {
       const player = G.players[playerID]
