@@ -1,6 +1,6 @@
 import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
-import { INITIAL_PLAYER_STATE, STARTER_ACTION_CARDS } from './constants'
+import { INITIAL_PLAYER_STATE, MAX_POINT_CARD, STARTER_ACTION_CARDS } from './constants'
 import {
   gemsToPieces,
   generateActionCards,
@@ -9,6 +9,7 @@ import {
   piecesToGems,
   randomizeActionCard,
   randomizePointCard,
+  sumPoint,
 } from './utils'
 import type { GameState } from './types'
 
@@ -112,10 +113,10 @@ export const Ventura: Game<GameState> = {
       } else if (card.exchange) {
         // TODO: validate = if (times = 0 || gems not enough)
         G.players[playerID].gems = [
-          player.gems[0] - (card.exchange[0][0] * times) + (card.exchange[1][0] * times),
-          player.gems[1] - (card.exchange[0][1] * times) + (card.exchange[1][1] * times),
-          player.gems[2] - (card.exchange[0][2] * times) + (card.exchange[1][2] * times),
-          player.gems[3] - (card.exchange[0][3] * times) + (card.exchange[1][3] * times),
+          player.gems[0] - card.exchange[0][0] * times + card.exchange[1][0] * times,
+          player.gems[1] - card.exchange[0][1] * times + card.exchange[1][1] * times,
+          player.gems[2] - card.exchange[0][2] * times + card.exchange[1][2] * times,
+          player.gems[3] - card.exchange[0][3] * times + card.exchange[1][3] * times,
         ]
       } else if (card.upgrade) {
         // TODO: validate = if (gems = 0)
@@ -134,5 +135,14 @@ export const Ventura: Game<GameState> = {
       G.players[id].actionCards = [...G.players[id].actionCards, ...G.players[id].used]
       G.players[id].used = []
     },
+  },
+  endIf: ({ G, ctx }) => {
+    if (G.players.some((p) => p.pointCards.length >= MAX_POINT_CARD)) {
+      const winner = G.players.reduce(
+        (prev, curr, i, a) => (sumPoint(curr) >= sumPoint(a[prev]) ? i : prev),
+        parseInt(ctx.currentPlayer)
+      )
+      return { winner, point: sumPoint(G.players[winner]) }
+    }
   },
 }

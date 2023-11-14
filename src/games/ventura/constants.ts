@@ -1,5 +1,7 @@
 import type {ActionCard, Gems, ActionType, PlayerState} from './types'
 
+export const MAX_POINT_CARD = 5
+
 export const PRICE_WEIGHT_MAP: Gems = [2, 3, 4, 5]
 
 export const ACTION_TYPES: Array<ActionType> = ['gain', 'exchange', 'upgrade']

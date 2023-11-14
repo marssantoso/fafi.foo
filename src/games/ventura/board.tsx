@@ -62,6 +62,15 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     }
   }, [dialogs])
 
+  // announce winner
+  useEffect(() => {
+    const winner = matchData && ctx.gameover ? matchData[ctx.gameover.winner] : undefined
+    if (winner) {
+      const msg = `GAMEOVER. Winner is "${winner.name}" with ${ctx.gameover.point} pts`
+      alert(msg)
+    }
+  }, [ctx, matchData]);
+
   const toggleDialog = (d: string, value?: boolean) => {
     setDialogs((state) => {
       const newState: Record<string, boolean> = {}
