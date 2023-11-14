@@ -1,5 +1,5 @@
 import { ActionCard, PointCard, Gems, PlayerState } from './types'
-import { PRICE_WEIGHT_MAP, ACTION_TYPES } from './constants'
+import { PRICE_WEIGHT_MAP, ACTION_TYPES, COIN_WEIGHT_MAP } from "./constants";
 
 const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
 
@@ -82,8 +82,8 @@ export const gemsToPoint = (gems: Gems) => gems.reduce((a, b, i) => a + b * PRIC
 
 export const sumPoint = (p: PlayerState) => {
   const pointFromCards = p.pointCards.reduce((a, b) => a + b.point, 0)
-  const pointFromCoins = p.coins.reduce((a, b) => a + b, 0)
-  const pointFromGems = p.gems.filter((i) => i).reduce((a, b) => a + b)
+  const pointFromCoins = p.coins.reduce((a, b, i) => a + b * COIN_WEIGHT_MAP[i], 0)
+  const pointFromGems = p.gems.filter((_, i) => i).reduce((a, b) => a + b)
   return pointFromCards + pointFromCoins + pointFromGems
 }
 

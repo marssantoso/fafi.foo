@@ -17,7 +17,7 @@ export const Ventura: Game<GameState> = {
   name: 'ventura',
   setup: (_, setupData) => {
     const pointCards = generateCards(5)
-    const actionCards = generateActionCards(6)
+    const actionCards = generateActionCards(6, STARTER_ACTION_CARDS)
     return {
       ...setupData,
       isStarted: false,
@@ -51,6 +51,7 @@ export const Ventura: Game<GameState> = {
           G.players[i].gems = getInitialGemsByPlayerId(i)
           G.players[i].actionCards = [...STARTER_ACTION_CARDS]
         })
+        G.coins = [G.players.length * 2, G.players.length]
         G.isStarted = true
       },
     },
@@ -108,6 +109,12 @@ export const Ventura: Game<GameState> = {
       const newCard = randomizePointCard(G.generatedPointCards)
       G.pointCards.push(newCard)
       G.generatedPointCards.push(newCard)
+
+      // put coins from the table to player (if any)
+      if (G.coins[cardID]) {
+        G.coins[cardID] -= 1
+        G.players[playerID].coins[cardID] += 1
+      }
     },
     playActionCard: ({ G }, { playerID, cardID, times = 1, upgrade }) => {
       const player = G.players[playerID]

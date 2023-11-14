@@ -2,7 +2,15 @@ import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import type { ActionCard, PointCard, PlayerState, OnClickCard, Gems } from './types.ts'
-import { gemsToPieces, getAvailableUpgrade, getMaxExchange, multiplyGems, piecesToGems, sortGems } from './utils.ts'
+import {
+  gemsToPieces,
+  getAvailableUpgrade,
+  getMaxExchange,
+  multiplyGems,
+  piecesToGems,
+  sortGems,
+  sumPoint
+} from "./utils.ts";
 
 // components
 import Inventory from './components/inventory.tsx'
@@ -11,6 +19,7 @@ import Price from './components/price.tsx'
 import PointCardComponent from './components/pointCard.tsx'
 import ActionCardComponent from './components/actionCard.tsx'
 import ClosedCard from './components/closedCard.tsx'
+import Coin from './components/coin.tsx'
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
@@ -159,7 +168,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       <div className={styles.wrapper}>
         <div className={styles.players}>
           {players.map(({ name, gems, isActive }, i) => (
-            <Player key={i} name={name} gems={gems} isActive={isActive} />
+            <Player key={i} name={name} gems={gems} isActive={isActive} point={sumPoint(G.players[i])} />
           ))}
         </div>
         <div className={styles.board}>
@@ -172,7 +181,10 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               <div className="gems"></div>
               <div className={styles.cards}>
                 {pointCards.map((card, i) => (
-                  <PointCardComponent key={i} {...card} onClick={() => onBuyPointCard(card, i)} />
+                  <div key={i} className={styles.pointCard}>
+                    <PointCardComponent {...card} onClick={() => onBuyPointCard(card, i)} />
+                    <Coin type={i === 0 ? 'gold' : i === 1 ? 'silver' : undefined}>{G.coins[i]}</Coin>
+                  </div>
                 ))}
                 <ClosedCard>Point Card</ClosedCard>
               </div>
@@ -187,23 +199,46 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 <dialog open={dialogs.takeActionCard}>
                   <fieldset className={styles.fieldset}>
                     <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</legend>
-                    <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
+                    <Inventory
+                      gems={player.gems}
+                      isLarge
+                      isSelectable
+                      selected={selectedGems}
+                      onSelect={onSelectGems}
+                    />
                   </fieldset>
-                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>Confirm</button>
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>
+                    Confirm
+                  </button>
                   <button onClick={() => toggleDialog('takeActionCard', false)}>Cancel</button>
                 </dialog>
                 <dialog open={dialogs.playActionUpgrade}>
                   <fieldset className={styles.fieldset}>
                     <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to upgrade</legend>
-                    <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGemsForUpgrade} />
+                    <Inventory
+                      gems={player.gems}
+                      isLarge
+                      isSelectable
+                      selected={selectedGems}
+                      onSelect={onSelectGemsForUpgrade}
+                    />
                   </fieldset>
                   {availableUpgrades.length ? (
                     <fieldset className={styles.fieldset}>
                       <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select what to upgrade to</legend>
                       <div className={styles.upgrades}>
                         {availableUpgrades.map((g, i) => (
-                          <label key={i} className={`${styles.upgrade} ${selectedUpgrade === i ? styles['upgrade--checked'] : ''}`}>
-                            <input type="radio" name="upgrade" value={i} checked={selectedUpgrade === i} onChange={() => setSelectedUpgrade(i)} />
+                          <label
+                            key={i}
+                            className={`${styles.upgrade} ${selectedUpgrade === i ? styles['upgrade--checked'] : ''}`}
+                          >
+                            <input
+                              type="radio"
+                              name="upgrade"
+                              value={i}
+                              checked={selectedUpgrade === i}
+                              onChange={() => setSelectedUpgrade(i)}
+                            />
                             <Price price={g} />
                           </label>
                         ))}
@@ -212,7 +247,9 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   ) : (
                     <></>
                   )}
-                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmUpgrade}>Confirm</button>
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmUpgrade}>
+                    Confirm
+                  </button>
                   <button onClick={() => toggleDialog('playActionUpgrade', false)}>Cancel</button>
                 </dialog>
                 <dialog open={dialogs.playActionExchange}>
@@ -222,19 +259,34 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                       type="number"
                       value={selectedExchange}
                       min={1}
-                      max={getMaxExchange(player.gems, (selectedCard?.card as ActionCard)?.exchange?.[0] ?? [0, 0, 0, 0])}
+                      max={getMaxExchange(
+                        player.gems,
+                        (selectedCard?.card as ActionCard)?.exchange?.[0] ?? [0, 0, 0, 0]
+                      )}
                       onInput={(e) => setSelectedExchange(parseInt((e.target as HTMLInputElement).value))}
                     />
                   </fieldset>
                   <fieldset className={styles.fieldset}>
                     <legend style={{ marginTop: 'unset', fontSize: 12 }}>Here's what you'll exchange</legend>
-                    <Inventory gems={multiplyGems((selectedCard?.card as ActionCard)?.exchange?.[0] ?? [0, 0, 0, 0], selectedExchange)} />
+                    <Inventory
+                      gems={multiplyGems(
+                        (selectedCard?.card as ActionCard)?.exchange?.[0] ?? [0, 0, 0, 0],
+                        selectedExchange
+                      )}
+                    />
                   </fieldset>
                   <fieldset className={styles.fieldset}>
                     <legend style={{ marginTop: 'unset', fontSize: 12 }}>Here's what you'll receive</legend>
-                    <Inventory gems={multiplyGems((selectedCard?.card as ActionCard)?.exchange?.[1] ?? [0, 0, 0, 0], selectedExchange)} />
+                    <Inventory
+                      gems={multiplyGems(
+                        (selectedCard?.card as ActionCard)?.exchange?.[1] ?? [0, 0, 0, 0],
+                        selectedExchange
+                      )}
+                    />
                   </fieldset>
-                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmExchange}>Confirm</button>
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmExchange}>
+                    Confirm
+                  </button>
                   <button onClick={() => toggleDialog('playActionExchange', false)}>Cancel</button>
                 </dialog>
               </div>
@@ -254,13 +306,15 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               <div className={styles.hand}>
                 <div className={styles.inventory}>
                   <Inventory gems={player.gems} isLarge />
+                  {player.coins.some((c: number) => c) ? <div className={styles.coins}>
+                    {player.coins.map((c: number, i: number) => <Coin key={i} type={i === 0 ? 'gold' : i === 1 ? 'silver' : undefined}>{c}</Coin>)}
+                  </div> : <></>}
                 </div>
                 <div className={styles.actionCards}>
                   {player.actionCards.map((card: ActionCard, i: number) => (
                     <ActionCardComponent key={i} {...card} onClick={() => onPlayActionCard(card, i)} />
                   ))}
                 </div>
-                <div className="coins"></div>
                 <div className={styles.pointCards}>
                   {player.pointCards.map(({ point, price }: PointCard, i: number) => (
                     <PointCardComponent key={i} point={point} price={price} />

@@ -10,6 +10,8 @@
   padding: 4px 8px;
   margin: 0 0 4px 0;
   text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
 }
 .playerName--active {
   background-color: palegreen;
@@ -59,7 +61,7 @@
 }
 
 .gem-0 {
-  background-color: burlywood;
+  background-color: khaki;
 }
 .gem-1 {
   background-color: mediumseagreen;
@@ -119,6 +121,12 @@
   color: slateblue;
   box-sizing: content-box;
 }
+.point--small {
+  width: 18px;
+  line-height: 18px;
+  border-width: 2px;
+  font-size: 10px;
+}
 
 .price {
   height: 28px;
@@ -135,4 +143,32 @@
   text-align: center;
   font-size: 24px;
   line-height: 32px;
+}
+
+.coins {
+  box-sizing: border-box;
+  width: 82px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 8px;
+  gap: 4px;
+}
+.coins--gold .coin {
+  background-color: goldenrod;
+  border: 1px solid darkgoldenrod;
+}
+.coins--silver .coin {
+  background-color: silver;
+  border: 1px solid darkgray;
+}
+
+.coin {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+}
+.coinRemainder {
+  font-size: 12px;
 }

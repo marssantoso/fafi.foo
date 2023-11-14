@@ -4,6 +4,8 @@ export const MAX_POINT_CARD = 5
 
 export const PRICE_WEIGHT_MAP: Gems = [2, 3, 4, 5]
 
+export const COIN_WEIGHT_MAP: [number, number] = [3, 1]
+
 export const ACTION_TYPES: Array<ActionType> = ['gain', 'exchange', 'upgrade']
 
 export const STARTER_ACTION_CARDS: [ActionCard, ActionCard] = [{ gain: [2, 0, 0, 0] }, { upgrade: 2 }]
