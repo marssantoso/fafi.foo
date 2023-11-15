@@ -60,6 +60,13 @@
   cursor: pointer;
 }
 
+.gemTiers {
+  display: flex;
+  padding: 4px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
 .gem-0 {
   background-color: khaki;
 }
@@ -171,4 +178,9 @@
 }
 .coinRemainder {
   font-size: 12px;
+}
+
+.arrow {
+  font-size: 12px;
+  line-height: 14px;
 }

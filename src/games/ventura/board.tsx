@@ -20,6 +20,7 @@ import PointCardComponent from './components/pointCard.tsx'
 import ActionCardComponent from './components/actionCard.tsx'
 import ClosedCard from './components/closedCard.tsx'
 import Coin from './components/coin.tsx'
+import GemTiers from './components/gemTiers.tsx'
 
 type Dialog = 'takeActionCard' | 'playActionUpgrade' | 'playActionExchange' | 'playActionGain' | 'discardGems'
 
@@ -192,6 +193,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       <h1 className="page__title">Ventura Unlimited</h1>
       <div className={styles.wrapper}>
         <div className={styles.players}>
+          <GemTiers />
           {players.map(({ name, gems, isActive }, i) => (
             <Player key={i} name={name} gems={gems} isActive={isActive} point={sumPoint(G.players[i])} />
           ))}
