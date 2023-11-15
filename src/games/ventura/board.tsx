@@ -162,7 +162,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   }
 
   const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
-    if (!card || ctx.currentPlayer !== playerID) return
+    if (!card || cardID === undefined || ctx.currentPlayer !== playerID || gemsToPieces(player.gems).length < cardID) return
     if (!cardID) return moves.takeActionCard({ playerID, cardID, gems: [0, 0, 0, 0], card })
 
     setSelectedCard({ card, cardID })
@@ -225,7 +225,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 <ClosedCard>Action Card</ClosedCard>
                 <dialog open={dialogs.takeActionCard}>
                   <fieldset className={styles.fieldset}>
-                    <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay</legend>
+                    <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to pay ({selectedCard?.cardID})</legend>
                     <Inventory
                       gems={player.gems}
                       isLarge
