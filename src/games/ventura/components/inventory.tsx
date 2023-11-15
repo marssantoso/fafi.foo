@@ -6,13 +6,14 @@ interface Props {
   gems: Gems
   isLarge?: boolean
   isSelectable?: boolean
+  amount?: number
   selected?: number[]
   onSelect?: (id: number) => void
 }
 
-const Inventory = ({ gems, isLarge, isSelectable, onSelect, selected }: Props) => {
-  const inv = Array(10).fill(null)
-  const pieces = gemsToPieces(gems)
+const Inventory = ({ gems, isLarge, isSelectable, onSelect, selected, amount = 10 }: Props) => {
+  const inv = Array(amount).fill(null)
+  const pieces = gemsToPieces(gems, amount)
   const className = `${styles.gems} ${isLarge ? styles['gems--large'] : ''} ${isSelectable ? styles['gems--selectable'] : ''}`
 
   return (

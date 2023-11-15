@@ -33,7 +33,24 @@ export const Ventura: Game<GameState> = {
   },
   turn: {
     minMoves: 1,
-    maxMoves: 1,
+    maxMoves: 2,
+    stages: {
+      discard: {
+        moves: {
+          updateGems: ({ G }, playerID, gems) => {
+            G.players[playerID].gems = gems
+          },
+        },
+      },
+    },
+    onMove: ({ G, ctx, events }) => {
+      const gems = G.players[parseInt(ctx.currentPlayer)].gems.reduce((a, b) => a + b, 0)
+      if (gems > 10) {
+        events.setActivePlayers({ value: { [ctx.currentPlayer]: 'discard' } })
+      } else {
+        events.endTurn()
+      }
+    }
   },
   moves: {
     initPlayer: {

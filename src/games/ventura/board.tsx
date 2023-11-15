@@ -21,6 +21,8 @@ import ActionCardComponent from './components/actionCard.tsx'
 import ClosedCard from './components/closedCard.tsx'
 import Coin from './components/coin.tsx'
 
+type Dialog = 'takeActionCard' | 'playActionUpgrade' | 'playActionExchange' | 'playActionGain' | 'discardGems'
+
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
   const [selectedGems, setSelectedGems] = useState<number[]>([])
@@ -29,16 +31,19 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   const [availableUpgrades, setAvailableUpgrades] = useState<Gems[]>([])
   const [selectedUpgrade, setSelectedUpgrade] = useState<number | null>(null)
   const [selectedExchange, setSelectedExchange] = useState<number>(1)
-  const [dialogs, setDialogs] = useState<Record<string, boolean>>({
+  const [dialogs, setDialogs] = useState<Record<Dialog, boolean>>({
     takeActionCard: false,
     playActionUpgrade: false,
     playActionExchange: false,
     playActionGain: false,
+    discardGems: false,
   })
 
   const pointCards: PointCard[] = G.pointCards
   const actionCards: ActionCard[] = G.actionCards
   const player = playerID ? G.players[playerID] : null
+  const gemsAmount = player?.gems.reduce((a: number, b: number) => a + b, 0)
+  const isStageDiscard = Boolean(playerID && ctx.activePlayers?.[playerID])
 
   // insert new player to G.players
   useEffect(() => {
@@ -71,6 +76,13 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     }
   }, [dialogs])
 
+  // handles inventory overload
+  useEffect(() => {
+    if (isStageDiscard) {
+      toggleDialog('discardGems', true)
+    }
+  }, [isStageDiscard]);
+
   // announce winner
   useEffect(() => {
     const winner = matchData && ctx.gameover ? matchData[ctx.gameover.winner] : undefined
@@ -80,7 +92,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     }
   }, [ctx, matchData]);
 
-  const toggleDialog = (d: string, value?: boolean) => {
+  const toggleDialog = (d: Dialog, value?: boolean) => {
     setDialogs((state) => {
       const newState: Record<string, boolean> = {}
       for (const key in state) {
@@ -133,6 +145,19 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     const { card, cardID } = selectedCard
     moves.playActionCard({ playerID, cardID, times: selectedExchange, card })
     toggleDialog('playActionExchange', false)
+  }
+
+  const onConfirmDiscardGems = () => {
+    if (gemsAmount - selectedGems.length > 10) return
+    const newGems = gemsToPieces(player.gems, gemsAmount).filter((_, i) => !selectedGems.includes(i))
+    moves.updateGems(playerID, piecesToGems(newGems))
+    toggleDialog('discardGems', false)
+  }
+
+  const onAutoDiscardGems = () => {
+    const newGems = gemsToPieces(player.gems, gemsAmount).slice(gemsAmount - 10)
+    moves.updateGems(playerID, piecesToGems(newGems))
+    toggleDialog('discardGems', false)
   }
 
   const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
@@ -288,6 +313,24 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                     Confirm
                   </button>
                   <button onClick={() => toggleDialog('playActionExchange', false)}>Cancel</button>
+                </dialog>
+                <dialog open={dialogs.discardGems}>
+                  <fieldset className={styles.fieldset}>
+                    <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to discard:</legend>
+                    <Inventory
+                      amount={gemsAmount}
+                      gems={player.gems}
+                      selected={selectedGems}
+                      isLarge
+                      isSelectable
+                      onSelect={onSelectGems}
+                    />
+                    <pre>{gemsAmount}</pre>
+                  </fieldset>
+                  <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmDiscardGems}>
+                    Discard
+                  </button>
+                  <button onClick={onAutoDiscardGems}>Auto Discard</button>
                 </dialog>
               </div>
               {player ? (
