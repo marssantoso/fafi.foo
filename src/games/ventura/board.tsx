@@ -46,6 +46,13 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   const gemsAmount = player?.gems.reduce((a: number, b: number) => a + b, 0)
   const isStageDiscard = Boolean(playerID && ctx.activePlayers?.[playerID])
 
+  // start the game once all players have connected
+  useEffect(() => {
+    if (players.length === ctx.numPlayers) {
+      moves.startGame()
+    }
+  }, [ctx.numPlayers, moves, players.length]);
+
   // insert new player to G.players
   useEffect(() => {
     if (playerID !== '0') return
@@ -201,7 +208,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
         <div className={styles.board}>
           {!G.isStarted ? (
             <div>
-              <button onClick={() => moves.startGame()}>Start</button>
+              <p style={{ marginTop: 'unset' }}>Waiting for players... ({players.length}/{ctx.numPlayers})</p>
             </div>
           ) : (
             <div className={styles.table}>
