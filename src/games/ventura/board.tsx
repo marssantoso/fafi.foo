@@ -327,7 +327,6 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                       isSelectable
                       onSelect={onSelectGems}
                     />
-                    <pre>{gemsAmount}</pre>
                   </fieldset>
                   <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmDiscardGems}>
                     Discard

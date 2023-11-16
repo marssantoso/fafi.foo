@@ -35,7 +35,14 @@ const GameLobby = () => {
 
   const onCreate = async () => {
     if (!playerName || !gameID) return
-    const { matchID } = await lobbyClient.createMatch(gameID, { numPlayers: 2 })
+
+    let numPlayers = 2
+    if (gameID === 'ventura') {
+      const ans = prompt('Enter number of players')
+      if (!ans || isNaN(parseInt(ans))) return
+      numPlayers = parseInt(ans)
+    }
+    const { matchID } = await lobbyClient.createMatch(gameID, { numPlayers })
     await joinMatch(matchID, playerName)
   }
 
