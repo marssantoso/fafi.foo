@@ -17,7 +17,7 @@ const Player = (props: Props) => {
           {props.name}
           {props.isActive ? ' *' : ''}
         </span>
-        <span className={`${styles.point} ${styles['point--small']}`}>{props.point}</span>
+        {/*<span className={`${styles.point} ${styles['point--small']}`}>{props.point}</span>*/}
       </p>
       <Inventory gems={props.gems} />
     </div>
