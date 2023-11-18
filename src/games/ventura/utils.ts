@@ -137,6 +137,18 @@ export const getMaxExchange = (gems: Gems, cost: Gems) => {
   return Math.min(...(gems.map(divide).filter(Boolean)))
 }
 
+export const addGems = (a: Gems, b: Gems): Gems => {
+  return a.map((gem, i) => gem + b[i]) as Gems
+}
+
+export const subtractGems = (a: Gems, b: Gems): Gems => {
+  return a.map((gem, i) => gem - b[i]) as Gems
+}
+
 export const multiplyGems = (expected: Gems, times = 1): Gems => {
   return expected.map((a) => a + (a * (times - 1))) as Gems
+}
+
+export const hasEnoughGems = (gemsHad: Gems, gemsRequired: Gems) => {
+  return gemsRequired.every((gem, i) => gem <= gemsHad[i])
 }

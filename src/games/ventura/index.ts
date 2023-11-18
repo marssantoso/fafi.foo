@@ -2,15 +2,16 @@ import { Game } from 'boardgame.io'
 import { INVALID_MOVE } from 'boardgame.io/core'
 import { INITIAL_PLAYER_STATE, MAX_POINT_CARD, STARTER_ACTION_CARDS } from './constants'
 import {
+  addGems,
   gemsToPieces,
   generateActionCards,
   generateCards,
-  getInitialGemsByPlayerId,
+  getInitialGemsByPlayerId, hasEnoughGems, multiplyGems,
   piecesToGems,
   randomizeActionCard,
-  randomizePointCard,
-  sumPoint,
-} from './utils'
+  randomizePointCard, subtractGems,
+  sumPoint
+} from "./utils";
 import type { GameState } from './types'
 
 export const Ventura: Game<GameState> = {
@@ -145,13 +146,11 @@ export const Ventura: Game<GameState> = {
           player.gems[3] + card.gain[3],
         ]
       } else if (card.exchange) {
-        // TODO: validate = if (times = 0 || gems not enough)
-        G.players[playerID].gems = [
-          player.gems[0] - card.exchange[0][0] * times + card.exchange[1][0] * times,
-          player.gems[1] - card.exchange[0][1] * times + card.exchange[1][1] * times,
-          player.gems[2] - card.exchange[0][2] * times + card.exchange[1][2] * times,
-          player.gems[3] - card.exchange[0][3] * times + card.exchange[1][3] * times,
-        ]
+        const gemsToExchange = multiplyGems(card.exchange[0], times)
+        const gemsToReceive = multiplyGems(card.exchange[1], times)
+        if (!hasEnoughGems(player.gems, gemsToExchange)) return INVALID_MOVE
+
+        G.players[playerID].gems = subtractGems(addGems(player.gems, gemsToReceive), gemsToExchange)
       } else if (card.upgrade) {
         // TODO: validate = if (gems = 0)
         G.players[playerID].gems = [

@@ -6,6 +6,7 @@ import {
   gemsToPieces,
   getAvailableUpgrade,
   getMaxExchange,
+  hasEnoughGems,
   multiplyGems,
   piecesToGems,
   sortGems,
@@ -182,7 +183,10 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
 
     if (card.gain) return moves.playActionCard({ playerID, cardID, card })
     if (card.upgrade) return toggleDialog('playActionUpgrade', true)
-    if (card.exchange) return toggleDialog('playActionExchange', true)
+    if (card.exchange) {
+      if (!hasEnoughGems(player.gems, card.exchange[0])) return
+      return toggleDialog('playActionExchange', true)
+    }
   }
 
   const onBuyPointCard: OnClickCard<PointCard> = (card?: PointCard, cardID?: number) => {
@@ -212,7 +216,6 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
             </div>
           ) : (
             <div className={styles.table}>
-              <div className="gems"></div>
               <div className={styles.cards}>
                 {pointCards.map((card, i) => (
                   <div key={i} className={styles.pointCard}>
