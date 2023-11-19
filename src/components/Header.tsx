@@ -7,7 +7,7 @@ const Header = () => {
   const [playerName, setPlayerName] = usePlayerName()
 
   const onEnterName = () => {
-    const newName = prompt('Enter new name')
+    const newName = prompt('Enter player name')
     localForage.setItem('playerName', newName).then(setPlayerName)
   }
 

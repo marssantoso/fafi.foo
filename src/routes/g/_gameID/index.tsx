@@ -10,7 +10,7 @@ const server = __BASE_URL__ || `${protocol}//${hostname}:${port}`
 const lobbyClient = new LobbyClient({ server })
 
 const GameLobby = () => {
-  const [playerName] = usePlayerName()
+  const [playerName, setPlayerName] = usePlayerName()
   const navigate = useNavigate()
   const { gameID } = useParams<string>()
   const [matches, setMatches] = useState<{ matchID: string }[]>([])
@@ -27,10 +27,14 @@ const GameLobby = () => {
   }
 
   const onJoin = async (ID?: string) => {
-    if (!playerName || !gameID) return
-    const matchID = ID ?? prompt('Enter room ID')?.toUpperCase()
+    if (!gameID) return
+
+    const userName = playerName ?? prompt('Enter player name')
+    const matchID = ID ?? prompt('Enter match ID')?.toUpperCase()
+    await localForage.setItem('playerName', userName).then(setPlayerName)
     if (!matchID) return
-    await joinMatch(matchID, playerName)
+
+    await joinMatch(matchID, userName)
   }
 
   const onCreate = async () => {
