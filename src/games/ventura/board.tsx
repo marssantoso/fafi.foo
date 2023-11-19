@@ -29,6 +29,7 @@ type Dialog =
   | 'playActionGain'
   | 'discardGems'
   | 'playersOverview'
+  | 'usedPile'
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
@@ -45,6 +46,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     playActionGain: false,
     discardGems: false,
     playersOverview: false,
+    usedPile: false,
   })
 
   const pointCards: PointCard[] = G.pointCards
@@ -201,9 +203,10 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     moves.buyPointCard({ playerID, cardID, card })
   }
 
-  const onClickUsedPile = () => {
+  const onTakeBackUsedPile = () => {
     if (ctx.currentPlayer !== playerID) return
     moves.rest(playerID)
+    toggleDialog('usedPile', false)
   }
 
   const onClickOverview = () => {
@@ -252,7 +255,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
               </div>
               {player ? (
                 <div className={styles.cards}>
-                  <ClosedCard onClick={onClickUsedPile}>
+                  <ClosedCard onClick={() => toggleDialog('usedPile', true)}>
                     <span>Used (x{player.used.length})</span>
                   </ClosedCard>
                 </div>
@@ -391,6 +394,24 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   Discard
                 </button>
                 <button onClick={onAutoDiscardGems}>Auto Discard</button>
+              </dialog>
+              <dialog open={dialogs.usedPile}>
+                <fieldset className={styles.fieldset}>
+                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Used action cards:</legend>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    {player.used.map((c) => <ActionCardComponent { ...c } isSmall />)}
+                  </div>
+                </fieldset>
+                <div style={{ textAlign: 'center' }}>
+                  {ctx.currentPlayer === playerID ? (
+                    <button style={{ marginTop: 12, marginRight: 8 }} onClick={onTakeBackUsedPile}>
+                      Take Back Cards
+                    </button>
+                  ) : (
+                    ''
+                  )}
+                  <button onClick={() => toggleDialog('usedPile', false)}>Close</button>
+                </div>
               </dialog>
             </>
           ) : (
