@@ -53,8 +53,9 @@ const GameMatch = () => {
     if (!gameID || !matchID || !playerName || credentials) return
     ;(async () => {
       const { playerCredentials, playerID } = await lobbyClient.joinMatch(gameID, matchID, { playerName })
+      const existingCredentials = await localForage.getItem<{ [p: string]: { playerCredentials: string; playerID: string } }>(gameID)
 
-      localForage.setItem(gameID, { [matchID]: { playerCredentials, playerID } })
+      localForage.setItem(gameID, { ...existingCredentials, [matchID]: { playerCredentials, playerID } })
       setPlayerID(playerID)
       setCredentials(playerCredentials)
     })()

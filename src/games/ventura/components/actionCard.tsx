@@ -5,13 +5,14 @@ import styles from './styles.module.css'
 
 interface Props extends ActionCard {
   onClick?: OnClickCard<ActionCard>
+  isSmall?: boolean
 }
 
 const ActionCardComponent = (props: Props) => {
   if (props.gain) {
     return (
-      <Card onClick={props.onClick}>
-        <Price price={props.gain} />
+      <Card isSmall={props.isSmall} onClick={props.onClick}>
+        <Price price={props.gain} isSmall={props.isSmall} />
         <span className={styles.sign}>＋</span>
       </Card>
     )
@@ -19,10 +20,10 @@ const ActionCardComponent = (props: Props) => {
 
   if (props.exchange) {
     return (
-      <Card onClick={props.onClick}>
-        <Price price={props.exchange[1]} />
+      <Card isSmall={props.isSmall} onClick={props.onClick}>
+        <Price price={props.exchange[1]} isSmall={props.isSmall} />
         <span className={styles.sign}>⇧</span>
-        <Price price={props.exchange[0]} />
+        <Price price={props.exchange[0]} isSmall={props.isSmall} />
       </Card>
     )
   }
@@ -30,12 +31,15 @@ const ActionCardComponent = (props: Props) => {
   if (props.upgrade) {
     const pieces = Array(props.upgrade).fill(null)
     return (
-      <Card onClick={props.onClick}>
-        <Price price={[0, 0, 0, 0]}/>
+      <Card isSmall={props.isSmall} onClick={props.onClick}>
+        <Price price={[0, 0, 0, 0]} />
         <span className={styles.sign}>⇧⇧</span>
-        <div className={styles.price}>
+        <div className={`${styles.price}`}>
           {pieces.map((_i, j) => (
-            <div key={j} className={`${styles.gem} ${styles['gem--uncolored']}`} />
+            <div
+              key={j}
+              className={`${styles.gem} ${styles['gem--uncolored']} ${props.isSmall ? styles['gem--small'] : ''}`}
+            />
           ))}
         </div>
       </Card>

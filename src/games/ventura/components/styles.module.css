@@ -2,10 +2,23 @@
 .player {
   box-sizing: border-box;
   margin-bottom: 4px;
-  padding: 4px;
+  padding: 4px 0;
+  height: 100%;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.player--hovered {
+  display: flex;
+  position: absolute;
+  left: 124px;
+  padding: 2px;
+  background-color: white;
+}
+.player--full {
+  position: unset;
 }
 
-.playerName {
+.player__name {
   background-color: lightsalmon;
   padding: 4px 8px;
   margin: 0 0 4px 0;
@@ -13,8 +26,35 @@
   display: flex;
   justify-content: space-between;
 }
-.playerName--active {
+.player__name--active {
   background-color: palegreen;
+}
+
+.playerOverview {
+  display: flex;
+}
+.playerOverview__separator {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 12px;
+  padding: 4px;
+  margin: 0 4px;
+  width: 12px;
+  height: 72px;
+  background-color: black;
+  color: white;
+  border-radius: 4px;
+}
+.playerOverview__separatorText {
+  transform: rotate(-90deg);
+}
+.playerOverview__cards {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
 }
 
 /* INVENTORY */
@@ -48,6 +88,10 @@
 .gem {
   width: 12px;
   height: 12px;
+}
+.gem--small {
+  width: 8px;
+  height: 8px;
 }
 .gem--uncolored {
   background-color: lightsteelblue;
@@ -97,11 +141,24 @@
   align-items: center;
   padding: 4px;
 }
+.card--small {
+  height: 76px;
+  width: 50px;
+  border-radius: 4px;
+}
+.card--closed.card--small {
+  height: 68px;
+  width: 42px;
+}
 .card__text {
   display: flex;
   justify-content: center;
   text-align: center;
   transform: rotate(-45deg);
+}
+.card--small .card__text {
+  font-size: 12px;
+  transform: rotate(0);
 }
 
 .pointCard {
@@ -144,12 +201,19 @@
   padding: 8px;
   gap: 4px;
 }
+.card--small .price {
+  height: 16px;
+}
 
 .sign {
   display: block;
   text-align: center;
   font-size: 24px;
   line-height: 32px;
+}
+.card--small .sign {
+  font-size: 12px;
+  line-height: 16px;
 }
 
 .coins {
