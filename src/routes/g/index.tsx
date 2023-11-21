@@ -1,11 +1,24 @@
-import { Link, useOutlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useOutlet, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import Header from '~/components/Header'
 import { GAMES } from '~/constants'
 
 const Games = () => {
   const Outlet = useOutlet()
+  const params = useParams()
+  const [title, setTitle] = useState('fafi.foo')
+
+  useEffect(() => {
+    const game = params.gameID ? GAMES.find(({ id }) => id === params.gameID) : undefined
+    setTitle(game ? `${game.name} – fafi.foo` : 'fafi.foo')
+  }, [params])
+
   return (
     <div>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <Header />
       <main>
         {Outlet || (

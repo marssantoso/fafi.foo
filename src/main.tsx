@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -35,7 +36,12 @@ const store = configureStore({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <HelmetProvider>
+        <Helmet>
+          <title>fafi.foo</title>
+        </Helmet>
+        <RouterProvider router={router} />
+      </HelmetProvider>
     </Provider>
   </React.StrictMode>
 )

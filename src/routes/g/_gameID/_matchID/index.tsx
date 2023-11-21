@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import localForage from 'localforage'
 import { Client } from 'boardgame.io/react'
 import { SocketIO } from 'boardgame.io/multiplayer'
 import { LobbyClient } from 'boardgame.io/client'
-import localForage from 'localforage'
-import { useParams } from 'react-router-dom'
 import { TicTacToe, Ventura } from '~/games'
 import { TicTacToeBoard, VenturaBoard } from '~/games/boards'
 
