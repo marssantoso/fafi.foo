@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #111830;
+  height: calc(100vh - 80px);
+}
+.main p {
+  color: white;
+}
+
+.content {
+  text-align: center;
+}

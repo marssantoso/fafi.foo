@@ -10,3 +10,13 @@ body {
   text-align: center;
   font-size: 1.5rem;
 }
+
+a {
+  text-decoration: none;
+  color: #019ca9;
+  transition: color 0.1s ease-in-out;
+}
+a:hover {
+  cursor: pointer;
+  color: #2ac5d2;
+}
