@@ -2,13 +2,48 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 80px;
   padding: 1rem;
   box-sizing: border-box;
   border-bottom: 1px solid lightgrey;
+  background-color: #111830;
 }
 
 .brand {
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  font-size: 1.125rem;
+  font-weight: 100;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: #019ca9;
+  font-family: 'Montez', cursive;
+  transition: color 0.1s ease-in-out;
+}
+.brand:hover {
+  color: #2ac5d2;
+}
+.brand:hover .logo {
+  filter: drop-shadow(0 0 10px #2ac5d2);
+}
+
+.logo {
+  transition: all 0.15s ease-in-out;
+}
+
+.user {
+  margin-right: 64px;
+  text-align: right;
+}
+.user__name {
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 4px;
+  font-weight: 300;
+}
+.user__link {
+  cursor: pointer;
+  color: #019ca9;
+}
+.user__link:hover {
+  color: #2ac5d2;
 }
