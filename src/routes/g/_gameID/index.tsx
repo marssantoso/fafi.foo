@@ -26,19 +26,30 @@ const GameLobby = () => {
     navigate(`/g/${gameID}/${matchID}`)
   }
 
+  const getPlayerName = async () => {
+    if (playerName) return playerName
+    const userName = prompt('Enter player name')
+    await localForage.setItem('playerName', userName).then(setPlayerName)
+    return userName
+  }
+
   const onJoin = async (ID?: string) => {
     if (!gameID) return
 
-    const userName = playerName ?? prompt('Enter player name')
+    const playerName = await getPlayerName()
+    if (!playerName) return
+
     const matchID = ID ?? prompt('Enter match ID')?.toUpperCase()
-    await localForage.setItem('playerName', userName).then(setPlayerName)
     if (!matchID) return
 
-    await joinMatch(matchID, userName)
+    await joinMatch(matchID, playerName)
   }
 
   const onCreate = async () => {
-    if (!playerName || !gameID) return
+    if (!gameID) return
+
+    const playerName = await getPlayerName()
+    if (!playerName) return
 
     let numPlayers = 2
     if (gameID === 'ventura') {
