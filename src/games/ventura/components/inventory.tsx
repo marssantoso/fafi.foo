@@ -14,7 +14,7 @@ interface Props {
 const Inventory = ({ gems, isLarge, isSelectable, onSelect, selected, amount = 10 }: Props) => {
   const inv = Array(amount).fill(null)
   const pieces = gemsToPieces(gems, amount)
-  const className = `${styles.gems} ${isLarge ? styles['gems--large'] : ''} ${isSelectable ? styles['gems--selectable'] : ''}`
+  const className = `${styles.inventory} ${isLarge ? styles['inventory--large'] : ''} ${isSelectable ? styles['inventory--selectable'] : ''}`
 
   return (
     <div className={className}>
