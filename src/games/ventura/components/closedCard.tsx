@@ -3,14 +3,18 @@ import styles from './styles.module.css'
 
 interface Props {
   children?: string | React.JSX.Element
+  type: 'action' | 'point'
   isSmall?: boolean
   onClick?: () => void
 }
 
-const ClosedCard = (props: Props) => {
-  return <div className={`${styles.card} ${styles['card--closed']} ${props.isSmall ? styles['card--small'] : ''}`} onClick={props.onClick}>
-    <span className={styles['card__text']}>{props.children}</span>
-  </div>
+const ClosedCard = ({ type, isSmall, onClick, children }: Props) => {
+  const className = `${styles.card} ${styles['card--closed']} ${isSmall ? styles['card--small'] : ''} ${type === 'point' ? styles['pointCard--closed'] : styles['actionCard--closed']}`
+  return (
+    <div className={className} onClick={onClick}>
+      <span className={styles['card__text']}>{children}</span>
+    </div>
+  )
 }
 
 export default ClosedCard

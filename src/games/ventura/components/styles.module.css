@@ -43,7 +43,7 @@
   padding: 4px;
   margin: 0 4px;
   width: 12px;
-  height: 72px;
+  height: 68px;
   background-color: black;
   color: white;
   border-radius: 4px;
@@ -57,7 +57,7 @@
   overflow-x: auto;
 }
 
-/* INVENTORY */
+/* GEMS */
 .gems {
   width: 100%;
   height: 100%;
@@ -88,15 +88,14 @@
 .gem {
   width: 12px;
   height: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .gem--small {
   width: 8px;
   height: 8px;
 }
-.gem--uncolored {
-  background-color: lightsteelblue;
-}
-.gems--large .gem {
+.gem--large {
   width: 16px;
   height: 16px;
 }
@@ -104,42 +103,56 @@
   cursor: pointer;
 }
 
+.gem-0 {
+  background-image: url("../assets/gem-0.svg");
+}
+.gem-1 {
+  background-image: url("../assets/gem-1.svg");
+}
+.gem-2 {
+  background-image: url("../assets/gem-2.svg");
+}
+.gem-3 {
+  background-image: url("../assets/gem-3.svg");
+}
+.gem--wild {
+  background-image: url("../assets/gem-wild.svg");
+}
+
+/* GEM TIERS */
 .gemTiers {
   display: flex;
   padding: 4px;
   justify-content: space-between;
   margin-bottom: 8px;
 }
-
-.gem-0 {
-  background-color: khaki;
-}
-.gem-1 {
-  background-color: mediumseagreen;
-}
-.gem-2 {
-  background-color: cornflowerblue;
-}
-.gem-3 {
-  background-color: indianred;
+.gemTiers__arrow {
+  font-size: 12px;
+  line-height: 18px;
 }
 
 /* CARD */
 .card {
-  border: 1px solid;
   width: 80px;
   height: 120px;
-  border-radius: 8px;
   cursor: pointer;
   flex-shrink: 0;
   display: inline-block;
 }
+.card__text {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  transform: rotate(-45deg);
+}
 .card--closed {
   height: 90px;
-  width: 60px;
+  width: 58px;
   display: flex;
   align-items: center;
   padding: 4px;
+  color: white;
+  background-repeat: no-repeat;
 }
 .card--small {
   height: 76px;
@@ -150,72 +163,74 @@
   height: 68px;
   width: 42px;
 }
-.card__text {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  transform: rotate(-45deg);
-}
 .card--small .card__text {
   font-size: 12px;
   transform: rotate(0);
 }
 
+/* ACTION CARD */
+.actionCard {
+  background-image: url("../assets/card-action-front.svg");
+  background-repeat: no-repeat;
+}
+.actionCard__section {
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  box-sizing: border-box;
+}
+.actionCard__icon {
+  text-align: center;
+}
+.actionCard__name {
+  font-size: 9px;
+  line-height: 10px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+.actionCard--closed {
+  background-image: url("../assets/card-action-back.svg");
+}
+
+.card--small .actionCard__section {
+  height: 19px;
+}
+.card--small .actionCard__name {
+  display: none;
+}
+
+/* POINT CARD */
 .pointCard {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-image: url("../assets/card-point-front.svg");
+  background-repeat: no-repeat;
 }
-
+.pointCard__section {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  box-sizing: border-box;
+}
 .pointCard__point {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.point {
-  display: block;
-  width: 32px;
-  line-height: 32px;
-  border-radius: 999px;
-  text-align: center;
+  padding-top: 4px;
   font-weight: bold;
-  border: 4px solid slateblue;
-  color: slateblue;
-  box-sizing: content-box;
 }
-.point--small {
-  width: 18px;
-  line-height: 18px;
-  border-width: 2px;
-  font-size: 10px;
+.pointCard--closed {
+  background-image: url("../assets/card-point-back.svg");
+  background-position: center;
 }
 
-.price {
-  height: 28px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-  gap: 4px;
-}
-.card--small .price {
-  height: 16px;
-}
-
-.sign {
-  display: block;
-  text-align: center;
-  font-size: 24px;
-  line-height: 32px;
-}
-.card--small .sign {
-  font-size: 12px;
-  line-height: 16px;
-}
-
+/* COINS */
 .coins {
   box-sizing: border-box;
   width: 82px;
@@ -233,18 +248,25 @@
   background-color: silver;
   border: 1px solid darkgray;
 }
-
 .coin {
   display: block;
   width: 10px;
   height: 10px;
   border-radius: 5px;
 }
-.coinRemainder {
+.coin__remainder {
   font-size: 12px;
 }
 
-.arrow {
-  font-size: 12px;
-  line-height: 14px;
+/* MISC */
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  gap: 2px;
+}
+.card--small .price {
+  height: 16px;
 }

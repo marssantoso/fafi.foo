@@ -16,7 +16,7 @@ const Coin = ({ children, type }: Props) => {
       {Array.from(Array(amount)).map((_, i) => (
         <div key={i} className={styles.coin}></div>
       ))}
-      {remainder ? <span className={styles.coinRemainder}>+{remainder}</span> : <></>}
+      {remainder ? <span className={styles.coin__remainder}>+{remainder}</span> : <></>}
     </div>
   )
 }

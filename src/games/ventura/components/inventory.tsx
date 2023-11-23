@@ -20,9 +20,9 @@ const Inventory = ({ gems, isLarge, isSelectable, onSelect, selected, amount = 1
     <div className={className}>
       {inv.map((_n, i) => <div key={i} className={`${styles.grid} ${isSelectable && selected?.includes(i) ? styles['grid--selected'] : ''}`}>
         {pieces[i] === undefined ? (
-          <div className={`${styles.gem} ${styles['gem--empty']}`} />
+          <div className={`${styles.gem} ${isLarge ? styles['gem--large'] : ''} ${styles['gem--empty']}`} />
         ) : (
-          <div className={`${styles.gem} ${styles['gem-' + pieces[i]]}`} onClick={() => onSelect && onSelect(i)} />
+          <div className={`${styles.gem} ${isLarge ? styles['gem--large'] : ''} ${styles['gem-' + pieces[i]]}`} onClick={() => onSelect && onSelect(i)} />
         )}
       </div>)}
     </div>
