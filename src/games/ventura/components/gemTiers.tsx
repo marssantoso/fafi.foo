@@ -7,8 +7,8 @@ const GemTiers = () => {
     <div className={styles.gemTiers}>
       {gems.map((_n, i) => (
         <React.Fragment key={i}>
-          <div className={`${styles.gem} ${styles['gem-' + i]}`}></div>
-          {i < gems.length - 1 ? <span className={styles.arrow}>→</span> : ''}
+          <div className={`${styles.gem} ${styles['gem--large']} ${styles['gem-' + i]}`}></div>
+          {i < gems.length - 1 ? <span className={styles.gemTiers__arrow}>→</span> : ''}
         </React.Fragment>
       ))}
     </div>

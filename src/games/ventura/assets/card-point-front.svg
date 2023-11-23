@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 160 240">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient-5);
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-4);
+      }
+
+      .cls-5 {
+        fill: #ffeeae;
+        stroke: url(#linear-gradient-2);
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="80" y1="0" x2="80" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe580"/>
+      <stop offset="1" stop-color="#f9c708"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="80" y1="231" x2="80" y2="9" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffdd5b"/>
+      <stop offset="1" stop-color="#f9c708"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="80" y1="110" x2="80" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffdd5b"/>
+      <stop offset="1" stop-color="#f9c708"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="80" y1="20" x2="80" y2="110" xlink:href="#linear-gradient-3"/>
+    <linearGradient id="linear-gradient-5" x1="80" y1="35.24" x2="80" y2="94.76" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffeeae"/>
+      <stop offset="1" stop-color="#ffe580"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <polygon class="cls-1" points="141.35 0 18.65 0 0 18.65 0 221.35 18.65 240 141.35 240 160 221.35 160 18.65 141.35 0"/>
+      <polygon class="cls-5" points="133.68 10 26.32 10 10 27.09 10 212.91 26.32 230 133.68 230 150 212.91 150 27.09 133.68 10"/>
+      <g>
+        <g>
+          <path class="cls-3" d="m140,65c0-15.3-11.46-27.92-26.26-29.76-8.25-9.34-20.3-15.24-33.74-15.24s-25.5,5.9-33.74,15.24c-14.8,1.84-26.26,14.46-26.26,29.76s11.46,27.92,26.26,29.76c8.25,9.34,20.3,15.24,33.74,15.24s25.5-5.9,33.74-15.24c14.8-1.84,26.26-14.46,26.26-29.76Z"/>
+          <path class="cls-4" d="m80,24c11.75,0,22.95,5.06,30.74,13.89l1,1.14,1.5.19c12.97,1.61,22.75,12.7,22.75,25.79s-9.78,24.18-22.75,25.79l-1.5.19-1,1.14c-7.79,8.83-19,13.89-30.74,13.89s-22.95-5.06-30.74-13.89l-1-1.14-1.5-.19c-12.97-1.61-22.75-12.7-22.75-25.79s9.78-24.18,22.75-25.79l1.5-.19,1-1.14c7.79-8.83,19-13.89,30.74-13.89m0-4c-13.44,0-25.49,5.9-33.74,15.24-14.8,1.84-26.26,14.46-26.26,29.76s11.46,27.92,26.26,29.76c8.25,9.34,20.3,15.24,33.74,15.24s25.5-5.9,33.74-15.24c14.8-1.84,26.26-14.46,26.26-29.76s-11.46-27.92-26.26-29.76c-8.25-9.34-20.3-15.24-33.74-15.24h0Z"/>
+        </g>
+        <circle class="cls-2" cx="80" cy="65" r="29.76"/>
+      </g>
+    </g>
+  </g>
+</svg>

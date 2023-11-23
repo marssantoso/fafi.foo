@@ -242,20 +242,22 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                     <Coin type={i === 0 ? 'gold' : i === 1 ? 'silver' : undefined}>{G.coins[i]}</Coin>
                   </div>
                 ))}
-                <ClosedCard>Point Card</ClosedCard>
+                <ClosedCard type="point">Point Card</ClosedCard>
               </div>
               <div className={styles.cards}>
                 {actionCards.map((card, i) => (
                   <div className={styles.actionCard} key={i}>
                     <ActionCardComponent {...card} onClick={() => onTakeActionCard(card, i)} />
-                    {G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}
+                    <div style={{ padding: 8 }}>
+                      {G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}
+                    </div>
                   </div>
                 ))}
-                <ClosedCard>Action Card</ClosedCard>
+                <ClosedCard type="action">Action Card</ClosedCard>
               </div>
               {player ? (
                 <div className={styles.cards}>
-                  <ClosedCard onClick={() => toggleDialog('usedPile', true)}>
+                  <ClosedCard type="action" onClick={() => player.used.length && toggleDialog('usedPile', true)}>
                     <span>Used (x{player.used.length})</span>
                   </ClosedCard>
                 </div>

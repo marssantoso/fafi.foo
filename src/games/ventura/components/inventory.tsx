@@ -14,15 +14,15 @@ interface Props {
 const Inventory = ({ gems, isLarge, isSelectable, onSelect, selected, amount = 10 }: Props) => {
   const inv = Array(amount).fill(null)
   const pieces = gemsToPieces(gems, amount)
-  const className = `${styles.gems} ${isLarge ? styles['gems--large'] : ''} ${isSelectable ? styles['gems--selectable'] : ''}`
+  const className = `${styles.inventory} ${isLarge ? styles['inventory--large'] : ''} ${isSelectable ? styles['inventory--selectable'] : ''}`
 
   return (
     <div className={className}>
       {inv.map((_n, i) => <div key={i} className={`${styles.grid} ${isSelectable && selected?.includes(i) ? styles['grid--selected'] : ''}`}>
         {pieces[i] === undefined ? (
-          <div className={`${styles.gem} ${styles['gem--empty']}`} />
+          <div className={`${styles.gem} ${isLarge ? styles['gem--large'] : ''} ${styles['gem--empty']}`} />
         ) : (
-          <div className={`${styles.gem} ${styles['gem-' + pieces[i]]}`} onClick={() => onSelect && onSelect(i)} />
+          <div className={`${styles.gem} ${isLarge ? styles['gem--large'] : ''} ${styles['gem-' + pieces[i]]}`} onClick={() => onSelect && onSelect(i)} />
         )}
       </div>)}
     </div>

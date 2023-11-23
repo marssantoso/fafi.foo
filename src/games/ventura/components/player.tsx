@@ -24,7 +24,6 @@ const Player = (props: Props) => {
             {props.name}
             {props.isActive ? ' *' : ''}
           </span>
-          {/*<span className={`${styles.point} ${styles['point--small']}`}>{sumPoint(props)}</span>*/}
         </p>
         <Inventory gems={props.gems} />
       </div>
@@ -58,7 +57,7 @@ const Player = (props: Props) => {
                 <span className={styles.playerOverview__separatorText}>bought</span>
               </div>
               <div className={styles.playerOverview__cards}>
-                <ClosedCard isSmall>
+                <ClosedCard type="point" isSmall>
                   <span>Point Card (x{props.pointCards.length.toString()})</span>
                 </ClosedCard>
               </div>
