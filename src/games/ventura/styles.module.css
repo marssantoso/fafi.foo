@@ -59,7 +59,11 @@
 
 .table {
   flex: 1;
-  padding-right: 1rem;
+  background-color: green;
+  padding: 2rem;
+  border: 1rem solid darkgreen;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
 .hand {
