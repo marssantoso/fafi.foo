@@ -94,11 +94,8 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   // announce winner
   useEffect(() => {
     const winner = matchData && ctx.gameover ? matchData[ctx.gameover.winner] : undefined
-    if (winner) {
-      const msg = `GAMEOVER. Winner is "${winner.name}" with ${ctx.gameover.point} pts`
-      alert(msg)
-    }
-  }, [ctx, matchData])
+    if (winner) openPlayersOverviewDialog()
+  }, [ctx.gameover, matchData, openPlayersOverviewDialog])
 
   const onSelectGems = (i: number) => {
     if (!player?.gems) return []
@@ -342,10 +339,15 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   />
                 </fieldset>
               </Dialog>
-              <Dialog open={isPlayersOverviewOpen} title="Players Overview" confirmLabel="Close" onConfirm={closePlayersOverviewDialog}>
-                {players.map((player, i) => (
-                  <Player key={i} {...player} isFull />
-                ))}
+              <Dialog
+                open={isPlayersOverviewOpen}
+                title={matchData && ctx.gameover ? `${matchData[ctx.gameover.winner]?.name?.toUpperCase()} Won with ${ctx.gameover.point} pts` : 'Players Overview'}
+                confirmLabel={ctx.gameover ? '' : 'Close'}
+                onConfirm={closePlayersOverviewDialog}
+              >
+                <>
+                  {players.map((player, i) => <Player key={i} {...player} isFull isRevealed={ctx.gameover} />)}
+                </>
               </Dialog>
               <Dialog open={isUsedCardsOpen} title="Used Cards" confirmLabel={ctx.currentPlayer === playerID ? 'Rest' : ''} closeLabel="Close" onConfirm={onTakeBackUsedPile} onClose={closeUsedCardsDialog}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>

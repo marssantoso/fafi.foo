@@ -1,12 +1,18 @@
+import { useState } from 'react'
 import { PlayerState } from '../types'
-import Inventory from './inventory.tsx'
+import { sumPoint } from '../utils'
 import styles from './styles.module.css'
-import ActionCardComponent from '~/games/ventura/components/actionCard.tsx'
-import ClosedCard from '~/games/ventura/components/closedCard.tsx'
-import { useState } from "react";
+
+// components
+import Inventory from './inventory.tsx'
+import PointCardComponent from './pointCard.tsx'
+import ActionCardComponent from './actionCard.tsx'
+import ClosedCard from './closedCard.tsx'
+import Coin from './coin.tsx'
 
 interface Props extends PlayerState {
   isFull?: boolean
+  isRevealed?: boolean
 }
 
 const Player = (props: Props) => {
@@ -27,6 +33,18 @@ const Player = (props: Props) => {
         </p>
         <Inventory gems={props.gems} />
       </div>
+      {props.isRevealed ? (
+        <>
+          <div className={styles.playerOverview__separator}>
+            <span className={styles.playerOverview__separatorText}>points</span>
+          </div>
+          <div className={styles.playerOverview__point}>
+            <span>{sumPoint(props)}</span>
+          </div>
+        </>
+      ) : (
+        ''
+      )}
       {isHovered || props.isFull ? (
         <div className={`${styles['player--hovered']} ${props.isFull ? styles['player--full'] : ''}`}>
           {props.actionCards.length ? (
@@ -43,9 +61,13 @@ const Player = (props: Props) => {
           ) : (
             ''
           )}
-          {props.used.length ? <div className={styles.playerOverview__separator}>
-            <span className={styles.playerOverview__separatorText}>used</span>
-          </div> : ''}
+          {props.used.length ? (
+            <div className={styles.playerOverview__separator}>
+              <span className={styles.playerOverview__separatorText}>used</span>
+            </div>
+          ) : (
+            ''
+          )}
           <div className={styles.playerOverview__cards}>
             {props.used.map((card, i) => (
               <ActionCardComponent key={`used-${i}`} {...card} isSmall />
@@ -57,9 +79,29 @@ const Player = (props: Props) => {
                 <span className={styles.playerOverview__separatorText}>bought</span>
               </div>
               <div className={styles.playerOverview__cards}>
-                <ClosedCard type="point" isSmall>
-                  <span>Point Card (x{props.pointCards.length.toString()})</span>
-                </ClosedCard>
+                {props.isRevealed ? (
+                  props.pointCards.map((card) => <PointCardComponent {...card} isSmall />)
+                ) : (
+                  <ClosedCard type="point" isSmall>
+                    <span>Point Card (x{props.pointCards.length.toString()})</span>
+                  </ClosedCard>
+                )}
+              </div>
+            </>
+          ) : (
+            ''
+          )}
+          {props.coins.some((c: number) => c) ? (
+            <>
+              <div className={styles.playerOverview__separator}>
+                <span className={styles.playerOverview__separatorText}>coins</span>
+              </div>
+              <div className={styles.playerOverview__coins}>
+                {props.coins.map((c: number, i: number) => (
+                  <Coin key={i} type={i === 0 ? 'gold' : i === 1 ? 'silver' : undefined}>
+                    {c}
+                  </Coin>
+                ))}
               </div>
             </>
           ) : (

@@ -53,7 +53,26 @@
 .playerOverview__cards {
   display: flex;
   gap: 4px;
-  overflow-x: auto;
+}
+.playerOverview__coins {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.playerOverview__point {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+.playerOverview__point span {
+  padding: 4px;
+  border: 2px solid;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* INVENTORY */
@@ -236,10 +255,16 @@
   background-position: center;
 }
 
+.card--small .pointCard__point {
+  font-size: 12px;
+  padding-top: unset;
+}
+
 /* COINS */
 .coins {
   box-sizing: border-box;
-  width: 82px;
+  width: 100%;
+  min-width: 40px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -266,6 +291,7 @@
 .dialog {
   background: unset;
   border: unset;
+  max-width: 50%;
 }
 .dialog__backdrop {
   position: fixed;
@@ -302,6 +328,8 @@
 }
 .dialog__body {
   padding: 1rem;
+  max-height: calc(50vh - 6rem);
+  overflow: auto;
 }
 .dialog__footer {
   display: flex;
