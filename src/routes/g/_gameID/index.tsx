@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import localForage from 'localforage'
-import { usePlayerName } from '~/hooks/usePlayerName.ts'
+import { usePlayerName } from '~/hooks'
 import { GAMES } from '~/constants'
 
 const { protocol, hostname, port } = window.location
