@@ -1,5 +1,5 @@
 import localForage from 'localforage'
-import { usePlayerName } from '~/hooks/usePlayerName.ts'
+import { usePlayerName } from '~/hooks'
 import styles from './header.module.css'
 import { Link } from 'react-router-dom'
 

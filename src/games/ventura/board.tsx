@@ -1,6 +1,7 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
+import { useDialog } from '~/hooks'
 import type { ActionCard, PointCard, PlayerState, OnClickCard, Gems } from './types.ts'
 import {
   gemsToPieces,
@@ -21,15 +22,7 @@ import ActionCardComponent from './components/actionCard.tsx'
 import ClosedCard from './components/closedCard.tsx'
 import Coin from './components/coin.tsx'
 import GemTiers from './components/gemTiers.tsx'
-
-type Dialog =
-  | 'takeActionCard'
-  | 'playActionUpgrade'
-  | 'playActionExchange'
-  | 'playActionGain'
-  | 'discardGems'
-  | 'playersOverview'
-  | 'usedPile'
+import Dialog from './components/dialog.tsx'
 
 export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps) => {
   const [players, setPlayers] = useState<PlayerState[]>([])
@@ -39,21 +32,20 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   const [availableUpgrades, setAvailableUpgrades] = useState<Gems[]>([])
   const [selectedUpgrade, setSelectedUpgrade] = useState<number | null>(null)
   const [selectedExchange, setSelectedExchange] = useState<number>(1)
-  const [dialogs, setDialogs] = useState<Record<Dialog, boolean>>({
-    takeActionCard: false,
-    playActionUpgrade: false,
-    playActionExchange: false,
-    playActionGain: false,
-    discardGems: false,
-    playersOverview: false,
-    usedPile: false,
-  })
 
   const pointCards: PointCard[] = G.pointCards
   const actionCards: ActionCard[] = G.actionCards
   const player: PlayerState | null = playerID ? G.players[playerID] : null
   const gemsAmount = player?.gems.reduce((a: number, b: number) => a + b, 0) ?? 0
   const isStageDiscard = Boolean(playerID && ctx.activePlayers?.[playerID])
+
+  // dialogs
+  const { isOpen: isPlayersOverviewOpen, openDialog: openPlayersOverviewDialog, closeDialog: closePlayersOverviewDialog } = useDialog()
+  const { isOpen: isUsedCardsOpen, openDialog: openUsedCardsDialog, closeDialog: closeUsedCardsDialog } = useDialog()
+  const { isOpen: isDiscardGemsOpen, openDialog: openDiscardGemsDialog, closeDialog: closeDiscardGemsDialog } = useDialog()
+  const { isOpen: isTakeActionCardOpen, openDialog: openTakeActionCardDialog, closeDialog: closeTakeActionCardDialog } = useDialog()
+  const { isOpen: isActionExchangeOpen, openDialog: openActionExchangeDialog, closeDialog: closeActionExchangeDialog } = useDialog()
+  const { isOpen: isActionUpgradeOpen, openDialog: openActionUpgradeDialog, closeDialog: closeActionUpgradeDialog } = useDialog()
 
   // start the game once all players have connected
   useEffect(() => {
@@ -83,6 +75,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
 
   // clear state when all dialogs close
   useEffect(() => {
+    const dialogs = [isActionExchangeOpen, isActionUpgradeOpen, isDiscardGemsOpen, isPlayersOverviewOpen, isTakeActionCardOpen, isUsedCardsOpen]
     if (Object.values(dialogs).every((v) => !v)) {
       setSelectedGems([])
       setSelectedCard(null)
@@ -91,14 +84,12 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       setSelectedUpgrade(null)
       setSelectedExchange(1)
     }
-  }, [dialogs])
+  }, [isActionExchangeOpen, isActionUpgradeOpen, isDiscardGemsOpen, isPlayersOverviewOpen, isTakeActionCardOpen, isUsedCardsOpen])
 
   // handles inventory overload
   useEffect(() => {
-    if (isStageDiscard) {
-      toggleDialog('discardGems', true)
-    }
-  }, [isStageDiscard])
+    if (isStageDiscard) openDiscardGemsDialog()
+  }, [isStageDiscard, openDiscardGemsDialog])
 
   // announce winner
   useEffect(() => {
@@ -108,17 +99,6 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
       alert(msg)
     }
   }, [ctx, matchData])
-
-  const toggleDialog = (d: Dialog, value?: boolean) => {
-    setDialogs((state) => {
-      const newState: Record<string, boolean> = {}
-      for (const key in state) {
-        newState[key] = key !== d ? false : value === undefined ? !state[d] : value
-      }
-      // TODO: handle state when opening dialog where another dialog is still open
-      return newState
-    })
-  }
 
   const onSelectGems = (i: number) => {
     if (!player?.gems) return []
@@ -137,7 +117,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     setAvailableUpgrades(upgrades.map((u) => piecesToGems(u)).sort(sortGems))
   }
 
-  const onConfirmSelectGems = () => {
+  const onConfirmTakeActionCard = () => {
     if (!selectedCard) return
     const gems = piecesToGems(selectedPieces)
     const totalGems = gems.reduce((prev: number, curr: number) => prev + curr, 0)
@@ -145,7 +125,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     if (totalGems < cardID) return
 
     moves.takeActionCard({ playerID, cardID, gems, card })
-    toggleDialog('takeActionCard', false)
+    closeTakeActionCardDialog()
   }
 
   const onConfirmUpgrade = () => {
@@ -154,36 +134,36 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     const upgrade = [piecesToGems(selectedPieces), availableUpgrades[selectedUpgrade]]
 
     moves.playActionCard({ playerID, cardID, upgrade, card })
-    toggleDialog('playActionUpgrade', false)
+    closeActionUpgradeDialog()
   }
 
   const onConfirmExchange = () => {
     if (!selectedCard) return
     const { card, cardID } = selectedCard
     moves.playActionCard({ playerID, cardID, times: selectedExchange, card })
-    toggleDialog('playActionExchange', false)
+    closeActionExchangeDialog()
   }
 
   const onConfirmDiscardGems = () => {
     if (!player || gemsAmount - selectedGems.length > 10) return
     const newGems = gemsToPieces(player.gems, gemsAmount).filter((_, i) => !selectedGems.includes(i))
     moves.updateGems(playerID, piecesToGems(newGems))
-    toggleDialog('discardGems', false)
+    closeDiscardGemsDialog()
   }
 
   const onAutoDiscardGems = () => {
     if (!player) return
     const newGems = gemsToPieces(player.gems, gemsAmount).slice(gemsAmount - 10)
     moves.updateGems(playerID, piecesToGems(newGems))
-    toggleDialog('discardGems', false)
+    openDiscardGemsDialog()
   }
 
   const onTakeActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
-    if (!player ||!card ||cardID === undefined ||ctx.currentPlayer !== playerID ||gemsToPieces(player.gems).length < cardID) return
+    if (!player || !card || cardID === undefined || ctx.currentPlayer !== playerID || gemsToPieces(player.gems).length < cardID) return
     if (!cardID) return moves.takeActionCard({ playerID, cardID, gems: [0, 0, 0, 0], card })
 
     setSelectedCard({ card, cardID })
-    toggleDialog('takeActionCard')
+    openTakeActionCardDialog()
   }
 
   const onPlayActionCard: OnClickCard<ActionCard> = (card?: ActionCard, cardID?: number) => {
@@ -191,10 +171,10 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
     setSelectedCard({ card, cardID })
 
     if (card.gain) return moves.playActionCard({ playerID, cardID, card })
-    if (card.upgrade) return toggleDialog('playActionUpgrade', true)
+    if (card.upgrade) return openActionUpgradeDialog()
     if (card.exchange) {
       if (!hasEnoughGems(player.gems, card.exchange[0])) return
-      return toggleDialog('playActionExchange', true)
+      return openActionExchangeDialog()
     }
   }
 
@@ -206,11 +186,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
   const onTakeBackUsedPile = () => {
     if (ctx.currentPlayer !== playerID) return
     moves.rest(playerID)
-    toggleDialog('usedPile', false)
-  }
-
-  const onClickOverview = () => {
-    toggleDialog('playersOverview', true)
+    closeUsedCardsDialog()
   }
 
   return (
@@ -222,7 +198,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
           {players.map((player, i) => (
             <Player key={i} {...player} />
           ))}
-          <button style={{ width: 'calc(100% - 8px)', margin: 4 }} onClick={onClickOverview}>
+          <button style={{ width: 'calc(100% - 8px)', margin: 4 }} onClick={openPlayersOverviewDialog}>
             Overview
           </button>
         </div>
@@ -248,16 +224,14 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 {actionCards.map((card, i) => (
                   <div className={styles.actionCard} key={i}>
                     <ActionCardComponent {...card} onClick={() => onTakeActionCard(card, i)} />
-                    <div style={{ padding: 8 }}>
-                      {G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}
-                    </div>
+                    <div style={{ padding: 8 }}>{G.actionGems[i] ? <Price price={G.actionGems[i]} /> : <></>}</div>
                   </div>
                 ))}
                 <ClosedCard type="action">Action Card</ClosedCard>
               </div>
               {player ? (
                 <div className={styles.cards}>
-                  <ClosedCard type="action" onClick={() => player.used.length && toggleDialog('usedPile', true)}>
+                  <ClosedCard type="action" onClick={() => player.used.length && openUsedCardsDialog()}>
                     <span>Used (x{player.used.length})</span>
                   </ClosedCard>
                 </div>
@@ -294,19 +268,15 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   ))}
                 </div>
               </div>
-              <dialog open={dialogs.takeActionCard}>
+              <Dialog open={isTakeActionCardOpen} title="Take Action Card" confirmLabel="Confirm" closeLabel="Cancel" onConfirm={onConfirmTakeActionCard} onClose={closeTakeActionCardDialog}>
                 <fieldset className={styles.fieldset}>
                   <legend style={{ marginTop: 'unset', fontSize: 12 }}>
                     Select gems to pay ({selectedCard?.cardID})
                   </legend>
                   <Inventory gems={player.gems} isLarge isSelectable selected={selectedGems} onSelect={onSelectGems} />
                 </fieldset>
-                <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmSelectGems}>
-                  Confirm
-                </button>
-                <button onClick={() => toggleDialog('takeActionCard', false)}>Cancel</button>
-              </dialog>
-              <dialog open={dialogs.playActionUpgrade}>
+              </Dialog>
+              <Dialog open={isActionUpgradeOpen} title="Upgrade" confirmLabel="Confirm" closeLabel="Cancel" onConfirm={onConfirmUpgrade} onClose={closeActionUpgradeDialog}>
                 <fieldset className={styles.fieldset}>
                   <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to upgrade</legend>
                   <Inventory
@@ -341,14 +311,10 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                 ) : (
                   <></>
                 )}
-                <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmUpgrade}>
-                  Confirm
-                </button>
-                <button onClick={() => toggleDialog('playActionUpgrade', false)}>Cancel</button>
-              </dialog>
-              <dialog open={dialogs.playActionExchange}>
+              </Dialog>
+              <Dialog open={isActionExchangeOpen} title="Exchange" confirmLabel="Confirm" closeLabel="Cancel" onConfirm={onConfirmExchange} onClose={closeActionExchangeDialog}>
                 <fieldset className={styles.fieldset}>
-                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Choose how many to exchange</legend>
+                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Multiplier</legend>
                   <input
                     type="number"
                     value={selectedExchange}
@@ -358,7 +324,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   />
                 </fieldset>
                 <fieldset className={styles.fieldset}>
-                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Here's what you'll exchange</legend>
+                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>To exchange</legend>
                   <Inventory
                     gems={multiplyGems(
                       (selectedCard?.card as ActionCard)?.exchange?.[0] ?? [0, 0, 0, 0],
@@ -367,7 +333,7 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                   />
                 </fieldset>
                 <fieldset className={styles.fieldset}>
-                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Here's what you'll receive</legend>
+                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>To receive</legend>
                   <Inventory
                     gems={multiplyGems(
                       (selectedCard?.card as ActionCard)?.exchange?.[1] ?? [0, 0, 0, 0],
@@ -375,61 +341,33 @@ export const VenturaBoard = ({ ctx, G, playerID, matchData, moves }: BoardProps)
                     )}
                   />
                 </fieldset>
-                <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmExchange}>
-                  Confirm
-                </button>
-                <button onClick={() => toggleDialog('playActionExchange', false)}>Cancel</button>
-              </dialog>
-              <dialog open={dialogs.discardGems}>
-                <fieldset className={styles.fieldset}>
-                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Select gems to discard:</legend>
-                  <Inventory
-                    amount={gemsAmount}
-                    gems={player.gems}
-                    selected={selectedGems}
-                    isLarge
-                    isSelectable
-                    onSelect={onSelectGems}
-                  />
-                </fieldset>
-                <button style={{ marginTop: 12, marginRight: 8 }} onClick={onConfirmDiscardGems}>
-                  Discard
-                </button>
-                <button onClick={onAutoDiscardGems}>Auto Discard</button>
-              </dialog>
-              <dialog open={dialogs.usedPile}>
-                <fieldset className={styles.fieldset}>
-                  <legend style={{ marginTop: 'unset', fontSize: 12 }}>Used action cards:</legend>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                    {player.used.map((c) => <ActionCardComponent { ...c } isSmall />)}
-                  </div>
-                </fieldset>
-                <div style={{ textAlign: 'center' }}>
-                  {ctx.currentPlayer === playerID ? (
-                    <button style={{ marginTop: 12, marginRight: 8 }} onClick={onTakeBackUsedPile}>
-                      Take Back Cards
-                    </button>
-                  ) : (
-                    ''
-                  )}
-                  <button onClick={() => toggleDialog('usedPile', false)}>Close</button>
+              </Dialog>
+              <Dialog open={isPlayersOverviewOpen} title="Players Overview" confirmLabel="Close" onConfirm={closePlayersOverviewDialog}>
+                {players.map((player, i) => (
+                  <Player key={i} {...player} isFull />
+                ))}
+              </Dialog>
+              <Dialog open={isUsedCardsOpen} title="Used Cards" confirmLabel={ctx.currentPlayer === playerID ? 'Rest' : ''} closeLabel="Close" onConfirm={onTakeBackUsedPile} onClose={closeUsedCardsDialog}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                  {player.used.map((c) => (
+                    <ActionCardComponent {...c} isSmall />
+                  ))}
                 </div>
-              </dialog>
+              </Dialog>
+              <Dialog open={isDiscardGemsOpen} title="Select to Discard" confirmLabel="Discard" closeLabel="Auto Discard" onConfirm={onConfirmDiscardGems} onClose={onAutoDiscardGems}>
+                <Inventory
+                  amount={gemsAmount}
+                  gems={player.gems}
+                  selected={selectedGems}
+                  isLarge
+                  isSelectable
+                  onSelect={onSelectGems}
+                />
+              </Dialog>
             </>
           ) : (
             <></>
           )}
-          <dialog open={dialogs.playersOverview}>
-            <fieldset className={styles.fieldset}>
-              <legend style={{ marginTop: 'unset', fontSize: 12, textAlign: 'center' }}>Players Overview</legend>
-              {players.map((player, i) => (
-                <Player key={i} {...player} isFull />
-              ))}
-            </fieldset>
-            <div style={{ textAlign: 'center' }}>
-              <button onClick={() => toggleDialog('playersOverview', false)}>Close</button>
-            </div>
-          </dialog>
         </div>
       </div>
     </div>
